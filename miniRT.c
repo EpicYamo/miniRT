@@ -1,18 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mlx_destroy_display.c                              :+:      :+:    :+:   */
+/*   miniRT.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mg <mg@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/03 18:56:35 by mg                #+#    #+#             */
-/*   Updated: 2020/10/04 01:55:35 by mg               ###   ########.fr       */
+/*   Created: 2025/10/26 16:34:17 by aaycan            #+#    #+#             */
+/*   Updated: 2025/10/26 18:43:10 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mlx_int.h"
+#include "miniRT.h"
 
-int	mlx_destroy_display(t_xvar *xvar)
+int	main(int argc, char **argv)
 {
-	XCloseDisplay(xvar->display);
+	if (!((argc == 2) && (!check_file(argv[1]))))
+		error_message(1, "faulty file format");
+	//
+	return (0);
 }
