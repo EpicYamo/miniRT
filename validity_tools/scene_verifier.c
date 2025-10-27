@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   miniRT.c                                           :+:      :+:    :+:   */
+/*   scene_verifier.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/26 16:34:17 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/27 23:36:58 by aaycan           ###   ########.fr       */
+/*   Created: 2025/10/27 23:36:50 by aaycan            #+#    #+#             */
+/*   Updated: 2025/10/27 23:43:34 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "../miniRT.h"
 
-int	main(int argc, char **argv)
+void	check_scene(char *file_path)
 {
-	if (!((argc == 2) && (!check_file(argv[1]))))
-		error_message(1, "faulty file format");
-	//create_scene(argv[1]);
-	return (0);
+	char	*scene;
+
+	scene = read_file(file_path);
+	//continue
 }

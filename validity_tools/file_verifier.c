@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_file_validity.c                              :+:      :+:    :+:   */
+/*   file_verifier.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:44:20 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/26 18:37:34 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/27 23:35:20 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 static void	check_empty_file(char *file_path);
 
@@ -28,6 +29,7 @@ int	check_file(char *file_path)
 		|| (file_path[i - 3] != '.'))
 		return (1);
 	check_empty_file(file_path);
+	check_scene(file_path);
 	return (0);
 }
 
