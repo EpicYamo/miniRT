@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/30 22:00:26 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/30 23:47:58 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,5 +116,7 @@ char	**ft_split(char const *s, char c);
 void	free_two_dim_array(char **arr);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_isdigit(int d);
+int		ft_atoi(const char *str);
+void	free_arr_error_message(char **scene);
 
 #endif

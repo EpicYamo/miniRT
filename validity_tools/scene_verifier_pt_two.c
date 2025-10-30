@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 21:32:09 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/30 22:09:03 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/30 23:52:06 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	validate_ambient_data(char **scene)
 
 static void	check_ambient_ratio(char **scene, char *ratio)
 {
-	if (ratio[3] != ' ')
+	if (ft_strlen(ratio) < 9)
 	{
 		free_two_dim_array(scene);
 		error_message(1, "identifier syntax");
@@ -92,5 +92,12 @@ static void	check_ambient_ratio(char **scene, char *ratio)
 
 static void	check_ambient_colors_range(char **scene, char *range)
 {
-	
+	int	i;
+	#include <stdio.h>
+	printf("%s\n", range);
+	if (ft_strlen(range) < 5)
+		free_arr_error_message(scene);
+	if (!ft_isdigit(range[0]))
+		free_arr_error_message(scene);
+	//......to be continued
 }
