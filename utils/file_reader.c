@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 19:11:27 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/27 23:31:58 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/30 17:24:40 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 static void	read_file_func(int fd, char **scene);
 static void	first_allocation(char **scene, char *tmp, int fd);
-static void	close_free_error(int fd, char *scene, int option);
+static void	close_error(int fd, int option);
 
 char	*read_file(char *file_path)
 {
@@ -49,14 +49,17 @@ static void	read_file_func(int fd, char **scene)
 		if (read_bytes == 0)
 			break ;
 		if (read_bytes == -1)
-			close_free_error(fd, *scene, 1);
+			close_error(fd, 1);
 		if ((*scene) == NULL)
 			first_allocation(scene, tmp, fd);
-		join_tmp = ft_strjoin(*scene, tmp);
-		if (join_tmp == NULL)
-			close_free_error(fd, *scene, 2);
-		free(*scene);
-		(*scene) = join_tmp;
+		else
+		{
+			join_tmp = ft_strjoin(*scene, tmp);
+			free(*scene);
+			if (join_tmp == NULL)
+				close_error(fd, 2);
+			(*scene) = join_tmp;
+		}
 	}
 	close(fd);
 }
@@ -80,10 +83,9 @@ static void	first_allocation(char **scene, char *tmp, int fd)
 	(*scene)[i] = '\0';
 }
 
-static void	close_free_error(int fd, char *scene, int option)
+static void	close_error(int fd, int option)
 {
 	close(fd);
-	free(scene);
 	if (option == 1)
 		error_message(1, "read function");
 	error_message(1, "memory allocation failed");

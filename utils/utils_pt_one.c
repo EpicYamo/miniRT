@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:56:13 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/27 23:06:50 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/30 16:28:14 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,31 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		result[i++] = ((unsigned char *)s2)[j++];
 	result[i] = '\0';
 	return (result);
+}
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	unsigned char	*tmp;
+	size_t			i;
+
+	i = 0;
+	tmp = malloc(size * count);
+	if (!tmp)
+		return (NULL);
+	while (i < size * count)
+	{
+		tmp[i] = 0;
+		i++;
+	}
+	return (tmp);
+}
+
+void	free_two_dim_array(char **arr)
+{
+	size_t	i;
+
+	i = -1;
+	while (arr[++i])
+		free(arr[i]);
+	free(arr);
 }

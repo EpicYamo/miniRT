@@ -1,5 +1,6 @@
 SRCS	:= miniRT.c \
-			validity_tools/file_verifier.c validity_tools/scene_verifier.c utils/file_reader.c utils/utils_pt_one.c
+			validity_tools/file_verifier.c validity_tools/scene_verifier_pt_one.c validity_tools/scene_verifier_pt_two.c \
+			utils/file_reader.c utils/utils_pt_one.c utils/utils_pt_two.c utils/utils_pt_three.c
 LIBS	:= -lm
 NAME	:=	miniRT
 CC		:=	cc

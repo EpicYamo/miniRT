@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/27 23:38:22 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/30 22:00:26 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,16 @@ typedef struct s_scene
 char	*read_file(char *file_path);
 int		check_file(char *file_path);
 void	check_scene(char *file_path);
+void	check_param_count(char **scene, char *params, int params_c);
+void	validate_ambient_data(char **scene);
 
 size_t	ft_strlen(const char *s);
 void	error_message(int code, char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
-
+void	*ft_calloc(size_t count, size_t size);
+char	**ft_split(char const *s, char c);
+void	free_two_dim_array(char **arr);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_isdigit(int d);
 
 #endif
