@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 21:32:09 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/31 15:12:44 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/31 15:35:32 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ void	validate_ambient_data(char **scene)
 			while (scene[i][j] == ' ')
 				j++;
 			check_ambient_ratio(scene, &scene[i][j]);
-			j += 3;
+			while (scene[i][j] != ' ')
+				j++;
 			while (scene[i][j] == ' ')
 				j++;
 			check_ambient_colors_range(scene, &scene[i][j]);
@@ -66,14 +67,27 @@ void	validate_ambient_data(char **scene)
 
 static void	check_ambient_ratio(char **scene, char *ratio)
 {
-	if (ft_strlen(ratio) < 9)
+	size_t i;
+
+	if (ft_strlen(ratio) < 7)
 		free_arr_error_message(scene);
-	if ((ratio[0] != '0' && ratio[0] != '1') || (ratio[1] != '.'))
-		free_arr_error_message(scene);
-	if ((ratio[0] == '1') && (ratio[2] != '0'))
-		free_arr_error_message(scene);
-	if (!ft_isdigit(ratio[2]))
-		free_arr_error_message(scene);
+	i = 0;
+	while (ratio[i] != ' ')
+		i++;
+	if (i == 1)
+	{
+		if ((ratio[0] != '0') && (ratio[0] != '1'))
+			free_arr_error_message(scene);
+	}
+	else
+	{
+		if (((ratio[0] != '0') && (ratio[0] != '1')) || (ratio[1] != '.'))
+			free_arr_error_message(scene);
+		if ((ratio[0] == '1') && (ratio[2] != '0'))
+			free_arr_error_message(scene);
+		if (!ft_isdigit(ratio[2]))
+			free_arr_error_message(scene);
+	}
 }
 
 static void	check_ambient_colors_range(char **scene, char *range)
@@ -94,7 +108,7 @@ static void	check_ambient_colors_range(char **scene, char *range)
 		if (range[i] == ',')
 			seperator_count++;
 		if ((range[i] != ',') && (!ft_isdigit(range[i])))
-			free_arr_error_message(scene);	
+			free_arr_error_message(scene);
 		range_size++;
 	}
 	if ((seperator_count != 2) || (range_size > 11))
