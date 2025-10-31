@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 21:32:09 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/31 15:35:32 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/31 16:21:42 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,12 @@ void	validate_ambient_data(char **scene)
 
 static void	check_ambient_ratio(char **scene, char *ratio)
 {
-	size_t i;
+	size_t	i;
 
 	if (ft_strlen(ratio) < 7)
 		free_arr_error_message(scene);
 	i = 0;
-	while (ratio[i] != ' ')
+	while ((ratio[i]) && (ratio[i] != ' '))
 		i++;
 	if (i == 1)
 	{

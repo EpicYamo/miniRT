@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 16:30:48 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/31 15:04:18 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/31 15:42:46 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,5 +73,5 @@ static int	ft_isspacemod(int *i, const char *strwosp)
 void	free_arr_error_message(char **scene)
 {
 	free_two_dim_array(scene);
-	error_message(1, "identifier syntax");
+	error_message(1, "wrong syntax");
 }
