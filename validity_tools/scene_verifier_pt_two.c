@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 21:32:09 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/30 23:52:06 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/31 15:12:44 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 static void	check_ambient_ratio(char **scene, char *ratio);
 static void	check_ambient_colors_range(char **scene, char *range);
+static void	check_range_values(char **scene, char *range);
 
 void	check_param_count(char **scene, char *params, int params_c)
 {
@@ -38,10 +39,7 @@ void	check_param_count(char **scene, char *params, int params_c)
 			fail = 0;
 	}
 	if (fail != 0)
-	{
-		free_two_dim_array(scene);
-		error_message(1, "identifier syntax");
-	}
+		free_arr_error_message(scene);
 }
 
 void	validate_ambient_data(char **scene)
@@ -69,35 +67,53 @@ void	validate_ambient_data(char **scene)
 static void	check_ambient_ratio(char **scene, char *ratio)
 {
 	if (ft_strlen(ratio) < 9)
-	{
-		free_two_dim_array(scene);
-		error_message(1, "identifier syntax");
-	}
+		free_arr_error_message(scene);
 	if ((ratio[0] != '0' && ratio[0] != '1') || (ratio[1] != '.'))
-	{
-		free_two_dim_array(scene);
-		error_message(1, "identifier syntax");
-	}
+		free_arr_error_message(scene);
 	if ((ratio[0] == '1') && (ratio[2] != '0'))
-	{
-		free_two_dim_array(scene);
-		error_message(1, "identifier syntax");
-	}
+		free_arr_error_message(scene);
 	if (!ft_isdigit(ratio[2]))
-	{
-		free_two_dim_array(scene);
-		error_message(1, "identifier syntax");
-	}
+		free_arr_error_message(scene);
 }
 
 static void	check_ambient_colors_range(char **scene, char *range)
 {
-	int	i;
-	#include <stdio.h>
-	printf("%s\n", range);
+	size_t	i;
+	size_t	seperator_count;
+	size_t	range_size;
+
 	if (ft_strlen(range) < 5)
 		free_arr_error_message(scene);
 	if (!ft_isdigit(range[0]))
 		free_arr_error_message(scene);
-	//......to be continued
+	i = -1;
+	seperator_count = 0;
+	range_size = 0;
+	while ((range[i + 1]) && (range[++i] != ' '))
+	{
+		if (range[i] == ',')
+			seperator_count++;
+		if ((range[i] != ',') && (!ft_isdigit(range[i])))
+			free_arr_error_message(scene);	
+		range_size++;
+	}
+	if ((seperator_count != 2) || (range_size > 11))
+		free_arr_error_message(scene);
+	check_range_values(scene, range);
+}
+
+static void	check_range_values(char **scene, char *range)
+{
+	if ((ft_atoi(range) < 0) || (ft_atoi(range) > 255))
+		free_arr_error_message(scene);
+	while (*range != ',')
+		range += 1;
+	range += 1;
+	if ((ft_atoi(range) < 0) || (ft_atoi(range) > 255))
+		free_arr_error_message(scene);
+	while (*range != ',')
+		range += 1;
+	range += 1;
+	if ((ft_atoi(range) < 0) || (ft_atoi(range) > 255))
+		free_arr_error_message(scene);
 }

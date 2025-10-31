@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 23:36:50 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/30 21:55:18 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/10/31 14:54:35 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,7 @@ static void	validate_identifier_names(char **scene)
 			&& (ft_strncmp(scene[i], "sp ", 3) != 0)
 			&& (ft_strncmp(scene[i], "pl ", 3) != 0)
 			&& (ft_strncmp(scene[i], "cy ", 3) != 0))
-		{
-			free_two_dim_array(scene);
-			error_message(1, "identifier syntax");
-		}
+			free_arr_error_message(scene);
 	}
 }
 
@@ -79,10 +76,7 @@ static void	validate_identifier_count(char **scene)
 		else if (ft_strncmp(scene[i], "C ", 2) == 0)
 			cam_count++;
 		if ((cam_count > 1) || (light_count > 1) || (ambient_count > 1))
-		{
-			free_two_dim_array(scene);
-			error_message(1, "identifier syntax");
-		}
+			free_arr_error_message(scene);
 	}
 }
 
