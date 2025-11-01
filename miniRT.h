@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/01 14:16:03 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/01 14:47:08 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,6 @@
 
 typedef struct s_scene_element_count
 {
-	size_t	ambient_count;
-	size_t	camera_count;
-	size_t	light_count;
 	size_t	sphere_count;
 	size_t	plane_count;
 	size_t	cylinder_count;
@@ -93,10 +90,10 @@ typedef struct s_cylinder_data
 
 typedef struct s_scene
 {
-	t_element_count	element_counts;
 	t_ambient_data	ambient_data;
 	t_camera_data	camera_data;
 	t_light_data	light_data;
+	t_element_count	element_counts;
 	t_sphere_data	*sphere_data;
 	t_plane_data	*plane_data;
 	t_cylinder_data	*cylinder_data;
@@ -118,6 +115,7 @@ void	check_diameter_height(char **scene, char *value);
 void	validate_plane_data(char **scene);
 void	validate_cylinder_data(char **scene);
 void	skip_to_next_parameter(char **scene, size_t *i, size_t *j);
+t_scene	*parse_scene(char *file_path);
 
 size_t	ft_strlen(const char *s);
 void	error_message(int code, char *str);
