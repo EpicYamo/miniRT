@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/01 10:43:50 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/01 14:16:03 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,14 @@ void	validate_ambient_data(char **scene);
 void	validate_camera_data(char **scene);
 void	check_coordinates(char **scene, char *coords);
 void	check_vector_val(char **scene, char *vector);
+void	validate_light_data(char **scene);
+void	check_ratio(char **scene, char *ratio);
+void	check_colors_range(char **scene, char *range);
+void	validate_sphere_data(char **scene);
+void	check_diameter_height(char **scene, char *value);
+void	validate_plane_data(char **scene);
+void	validate_cylinder_data(char **scene);
+void	skip_to_next_parameter(char **scene, size_t *i, size_t *j);
 
 size_t	ft_strlen(const char *s);
 void	error_message(int code, char *str);

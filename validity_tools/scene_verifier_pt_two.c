@@ -6,15 +6,13 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 21:32:09 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/31 16:21:42 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/01 14:10:29 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 #include <stdlib.h>
 
-static void	check_ambient_ratio(char **scene, char *ratio);
-static void	check_ambient_colors_range(char **scene, char *range);
 static void	check_range_values(char **scene, char *range);
 
 void	check_param_count(char **scene, char *params, int params_c)
@@ -55,22 +53,20 @@ void	validate_ambient_data(char **scene)
 			j = 1;
 			while (scene[i][j] == ' ')
 				j++;
-			check_ambient_ratio(scene, &scene[i][j]);
+			check_ratio(scene, &scene[i][j]);
 			while (scene[i][j] != ' ')
 				j++;
 			while (scene[i][j] == ' ')
 				j++;
-			check_ambient_colors_range(scene, &scene[i][j]);
+			check_colors_range(scene, &scene[i][j]);
 		}
 	}
 }
 
-static void	check_ambient_ratio(char **scene, char *ratio)
+void	check_ratio(char **scene, char *ratio)
 {
 	size_t	i;
 
-	if (ft_strlen(ratio) < 7)
-		free_arr_error_message(scene);
 	i = 0;
 	while ((ratio[i]) && (ratio[i] != ' '))
 		i++;
@@ -79,7 +75,7 @@ static void	check_ambient_ratio(char **scene, char *ratio)
 		if ((ratio[0] != '0') && (ratio[0] != '1'))
 			free_arr_error_message(scene);
 	}
-	else
+	else if (i == 3)
 	{
 		if (((ratio[0] != '0') && (ratio[0] != '1')) || (ratio[1] != '.'))
 			free_arr_error_message(scene);
@@ -88,9 +84,11 @@ static void	check_ambient_ratio(char **scene, char *ratio)
 		if (!ft_isdigit(ratio[2]))
 			free_arr_error_message(scene);
 	}
+	else
+		free_arr_error_message(scene);
 }
 
-static void	check_ambient_colors_range(char **scene, char *range)
+void	check_colors_range(char **scene, char *range)
 {
 	size_t	i;
 	size_t	seperator_count;

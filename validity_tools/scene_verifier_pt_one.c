@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 23:36:50 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/01 10:45:47 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/01 14:11:39 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ void	check_scene(char *file_path)
 	validate_parameter_count(scene);
 	validate_ambient_data(scene);
 	validate_camera_data(scene);
-	//validate_light_data(scene);
-	//validate_sphere_data(scene);
-	//validate_plane_data(scene);
-	//validate_cylinder_data(scene);
+	validate_light_data(scene);
+	validate_sphere_data(scene);
+	validate_plane_data(scene);
+	validate_cylinder_data(scene);
 	free_two_dim_array(scene);
 }
 
