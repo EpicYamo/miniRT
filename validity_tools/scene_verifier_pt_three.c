@@ -6,14 +6,14 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 21:50:33 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/31 16:19:38 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/01 10:35:15 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 
-static void	check_seperator_count(char **scene, char *coords);
-static void	check_coordinate_val(char **scene, char *coords);
+static void	check_camera_orientation_vector(char **scene, char *vector);
+static void	check_camera_fov(char **scene, char *fov);
 
 void	validate_camera_data(char **scene)
 {
@@ -33,65 +33,58 @@ void	validate_camera_data(char **scene)
 				j++;
 			while (scene[i][j] == ' ')
 				j++;
-			//check_camera_orientation_vector(scene, &scene[i][j]);
+			check_camera_orientation_vector(scene, &scene[i][j]);
 			while (scene[i][j] != ' ')
 				j++;
 			while (scene[i][j] == ' ')
 				j++;
-			//check_camera_fov(scene, &scene[i][j]);
+			check_camera_fov(scene, &scene[i][j]);
 		}
 	}
 }
 
-void	check_coordinates(char **scene, char *coords)
-{
-	check_seperator_count(scene, coords);
-	check_coordinate_val(scene, coords);
-	while (*coords != ',')
-		coords += 1;
-	coords += 1;
-	check_coordinate_val(scene, coords);
-	while (*coords != ',')
-		coords += 1;
-	coords += 1;
-	check_coordinate_val(scene, coords);
-}
-
-static void	check_seperator_count(char **scene, char *coords)
+static void	check_camera_orientation_vector(char **scene, char *vector)
 {
 	size_t	i;
 	size_t	seperator_count;
 
 	i = 0;
 	seperator_count = 0;
-	while ((coords[i]) && (coords[i] != ' '))
+	while ((vector[i]) && (vector[i] != ' '))
 	{
-		if (coords[i] == ',')
+		if ((vector[i] != '.') && (vector[i] != ',') && (vector[i] != '-')
+			&& (!ft_isdigit(vector[i])))
+			free_arr_error_message(scene);
+		if (vector[i] == ',')
 			seperator_count++;
-		if ((coords[i] != '-') && (coords[i] != '.') && (coords[i] != ',')
-			&& (!ft_isdigit(coords[i])))
+		i++;
+	}
+	if ((seperator_count != 2) || (i < 5))
+		free_arr_error_message(scene);
+	check_vector_val(scene, vector);
+	while (*vector != ',')
+		vector += 1;
+	vector += 1;
+	check_vector_val(scene, vector);
+	while (*vector != ',')
+		vector += 1;
+	vector += 1;
+	check_vector_val(scene, vector);
+}
+
+static void	check_camera_fov(char **scene, char *fov)
+{
+	size_t	i;
+
+	i = 0;
+	while ((fov[i]) && (fov[i] != ' '))
+	{
+		if (!ft_isdigit(fov[i]))
 			free_arr_error_message(scene);
 		i++;
 	}
-	if (seperator_count != 2)
+	if (i > 3)
 		free_arr_error_message(scene);
-}
-
-static void	check_coordinate_val(char **scene, char *coords)
-{
-	size_t	i;
-	size_t	dot_count;
-
-	if ((coords[0] == ',') || (coords[0] == '.'))
-		free_arr_error_message(scene);
-	i = 0;
-	dot_count = 0;
-	while ((coords[i]) && (coords[i] != ','))
-	{
-		if (coords[i] == '.')
-			dot_count += 1;
-		i++;
-	}
-	if (dot_count > 1)
+	if ((ft_atoi(fov) < 0) || (ft_atoi(fov) > 180))
 		free_arr_error_message(scene);
 }

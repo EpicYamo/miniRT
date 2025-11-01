@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/31 16:12:49 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/01 10:43:50 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ void	check_param_count(char **scene, char *params, int params_c);
 void	validate_ambient_data(char **scene);
 void	validate_camera_data(char **scene);
 void	check_coordinates(char **scene, char *coords);
+void	check_vector_val(char **scene, char *vector);
 
 size_t	ft_strlen(const char *s);
 void	error_message(int code, char *str);
