@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 14:17:15 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/01 14:50:19 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/04 00:11:51 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <stdlib.h>
 
 static void	create_scene(char **scene_map, t_scene **scene);
+static void	create_ambient_data(t_scene *scene, char **scene_map);
+static void	create_camera_data(t_scene *scene, char **scene_map);
 
 t_scene	*parse_scene(char *file_path)
 {
@@ -40,15 +42,70 @@ static void	create_scene(char **scene_map, t_scene **scene)
 	t_scene	*tmp_scene;
 
 	tmp_scene = malloc(sizeof(t_scene));
-	free_two_dim_array(scene_map);
 	if (!tmp_scene)
+	{
+		free_two_dim_array(scene_map);
 		error_message(1, "allocation failed");
-	//create_ambient_data(tmp_scene, g_c);
-	//create_camera_data(tmp_scene, g_c);
-	//create_light_data(tmp_scene, g_c);
-	//create_parameter_count(tmp_scene, g_c);
-	//create_sphere_data(tmp_scene, g_c);
-	//create_plane_data(tmp_scene, g_c);
-	//create_cylinder_data(tmp_scene, g_c);
+	}
+	fill_blank(tmp_scene);
+	create_ambient_data(tmp_scene, scene_map);
+	create_camera_data(tmp_scene, scene_map);
+	//create_light_data(tmp_scene, scene_map);
+	//create_parameter_count(tmp_scene, scene_map);
+	//create_sphere_data(tmp_scene, scene_map);
+	//create_plane_data(tmp_scene, scene_map);
+	//create_cylinder_data(tmp_scene, scene_map);
 	(*scene) = tmp_scene;
+	free_two_dim_array(scene_map);
+}
+
+static void	create_ambient_data(t_scene *scene, char **scene_map)
+{
+	size_t	i;
+	size_t	j;
+
+	i = -1;
+	while (scene_map[++i])
+	{
+		if (scene_map[i][0] == 'A')
+		{
+			j = 1;
+			while (scene_map[i][j] == ' ')
+				j++;
+			fill_ratio(scene, &scene_map[i][j]);
+			while (scene_map[i][j] != ' ')
+				j++;
+			while (scene_map[i][j] == ' ')
+				j++;
+			fill_colors_range(scene, &scene_map[i][j]);
+		}
+	}
+}
+
+static void	create_camera_data(t_scene *scene, char **scene_map)
+{
+	size_t	i;
+	size_t	j;
+
+	i = -1;
+	while (scene_map[++i])
+	{
+		if (scene_map[i][0] == 'C')
+		{
+			j = 1;
+			while (scene_map[i][j] == ' ')
+				j++;
+			fill_coordinates(scene, &scene_map[i][j]);
+			while (scene_map[i][j] != ' ')
+				j++;
+			while (scene_map[i][j] == ' ')
+				j++;
+			fill_camera_orientation_vector(scene, &scene_map[i][j]);
+			while (scene_map[i][j] != ' ')
+				j++;
+			while (scene_map[i][j] == ' ')
+				j++;
+			scene->camera_data.fov = ft_atoi(&scene_map[i][j]);
+		}
+	}
 }

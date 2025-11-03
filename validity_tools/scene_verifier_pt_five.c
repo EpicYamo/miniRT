@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 15:17:22 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/01 10:36:14 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/03 23:53:08 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static void	check_coordinate_val(char **scene, char *coords)
 		free_arr_error_message(scene);
 	i = 0;
 	dot_count = 0;
-	while ((coords[i]) && (coords[i] != ','))
+	while ((coords[i]) && (coords[i] != ',') && (coords[i] != ' '))
 	{
 		if (coords[i] == '.')
 			dot_count += 1;
@@ -73,4 +73,12 @@ static void	check_coordinate_val(char **scene, char *coords)
 	}
 	if (dot_count > 1)
 		free_arr_error_message(scene);
+	if (dot_count == 1)
+	{
+		while (*coords != '.')
+			coords++;
+		coords++;
+		if (!ft_isdigit(*coords))
+			free_arr_error_message(scene);
+	}
 }
