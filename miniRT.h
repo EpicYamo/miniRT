@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/04 13:33:59 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/04 13:48:34 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,5 +138,7 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_isdigit(int d);
 int		ft_atoi(const char *str);
 void	free_arr_error_message(char **scene);
+
+void	print_the_scene(t_scene *scene);
 
 #endif

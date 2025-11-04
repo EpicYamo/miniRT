@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 14:17:15 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/04 13:37:52 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/04 13:48:56 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ static void	create_scene(char **scene_map, t_scene **scene)
 	//create_plane_data(tmp_scene, scene_map);
 	//create_cylinder_data(tmp_scene, scene_map);
 	(*scene) = tmp_scene;
+	print_the_scene(*scene);
 	free_two_dim_array(scene_map);
 }
 

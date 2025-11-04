@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 22:58:08 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/04 13:30:31 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/04 14:21:31 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ void	fill_ambient_ratio(t_scene *scene, char *ratio)
 	if (i == 1)
 		scene->ambient_data.ratio = (ft_atoi(ratio) * 10);
 	else if (i == 3)
-		scene->ambient_data.ratio = ((ft_atoi(ratio) * 10) + (ft_atoi(ratio + 2)));
+		scene->ambient_data.ratio
+			= ((ft_atoi(ratio) * 10) + (ft_atoi(ratio + 2)));
 }
 
 void	fill_ambient_colors_range(t_scene *scene, char *range)
@@ -78,6 +79,7 @@ void	create_light_data(t_scene *scene, char **scene_map)
 	{
 		if (scene_map[i][0] == 'L')
 		{
+			scene->light_data.existence = 1;
 			j = 1;
 			while (scene_map[i][j] == ' ')
 				j++;
@@ -101,5 +103,6 @@ static void	fill_light_ratio(t_scene *scene, char *ratio)
 	if (i == 1)
 		scene->light_data.brigthness = (ft_atoi(ratio) * 10);
 	else if (i == 3)
-		scene->light_data.brigthness = ((ft_atoi(ratio) * 10) + (ft_atoi(ratio + 2)));
+		scene->light_data.brigthness
+			= ((ft_atoi(ratio) * 10) + (ft_atoi(ratio + 2)));
 }
