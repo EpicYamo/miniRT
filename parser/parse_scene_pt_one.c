@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 14:17:15 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/04 00:11:51 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/04 13:37:52 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ static void	create_scene(char **scene_map, t_scene **scene)
 	fill_blank(tmp_scene);
 	create_ambient_data(tmp_scene, scene_map);
 	create_camera_data(tmp_scene, scene_map);
-	//create_light_data(tmp_scene, scene_map);
-	//create_parameter_count(tmp_scene, scene_map);
+	create_light_data(tmp_scene, scene_map);
+	create_parameter_count(tmp_scene, scene_map);
 	//create_sphere_data(tmp_scene, scene_map);
 	//create_plane_data(tmp_scene, scene_map);
 	//create_cylinder_data(tmp_scene, scene_map);
@@ -69,15 +69,16 @@ static void	create_ambient_data(t_scene *scene, char **scene_map)
 	{
 		if (scene_map[i][0] == 'A')
 		{
+			scene->ambient_data.existence = 1;
 			j = 1;
 			while (scene_map[i][j] == ' ')
 				j++;
-			fill_ratio(scene, &scene_map[i][j]);
+			fill_ambient_ratio(scene, &scene_map[i][j]);
 			while (scene_map[i][j] != ' ')
 				j++;
 			while (scene_map[i][j] == ' ')
 				j++;
-			fill_colors_range(scene, &scene_map[i][j]);
+			fill_ambient_colors_range(scene, &scene_map[i][j]);
 		}
 	}
 }
@@ -92,10 +93,11 @@ static void	create_camera_data(t_scene *scene, char **scene_map)
 	{
 		if (scene_map[i][0] == 'C')
 		{
+			scene->camera_data.existence = 1;
 			j = 1;
 			while (scene_map[i][j] == ' ')
 				j++;
-			fill_coordinates(scene, &scene_map[i][j]);
+			fill_camera_coordinates(scene, &scene_map[i][j]);
 			while (scene_map[i][j] != ' ')
 				j++;
 			while (scene_map[i][j] == ' ')

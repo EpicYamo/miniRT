@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/04 00:12:33 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/04 13:33:59 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ typedef struct s_scene_element_count
 
 typedef struct s_ambient_data
 {
+	int				existence;
 	unsigned int	ratio;
 	unsigned int	red;
 	unsigned int	green;
@@ -32,6 +33,7 @@ typedef struct s_ambient_data
 
 typedef struct s_camera_data
 {
+	int			existence;
 	long long	pos_x;
 	long long	pos_y;
 	long long	pos_z;
@@ -43,6 +45,7 @@ typedef struct s_camera_data
 
 typedef struct s_light_data
 {
+	int				existence;
 	long long		pos_x;
 	long long		pos_y;
 	long long		pos_z;
@@ -116,11 +119,14 @@ void	validate_plane_data(char **scene);
 void	validate_cylinder_data(char **scene);
 void	skip_to_next_parameter(char **scene, size_t *i, size_t *j);
 t_scene	*parse_scene(char *file_path);
-void	fill_ratio(t_scene *scene, char *ratio);
-void	fill_colors_range(t_scene *scene, char *range);
-void	fill_coordinates(t_scene *scene, char *coords);
+void	fill_ambient_ratio(t_scene *scene, char *ratio);
+void	fill_ambient_colors_range(t_scene *scene, char *range);
+void	fill_camera_coordinates(t_scene *scene, char *coords);
 void	fill_camera_orientation_vector(t_scene *scene, char *vector);
 void	fill_blank(t_scene *scene);
+void	create_light_data(t_scene *scene, char **scene_map);
+void	fill_light_coordinates(t_scene *scene, char *coords);
+void	create_parameter_count(t_scene *scene, char **scene_map);
 
 size_t	ft_strlen(const char *s);
 void	error_message(int code, char *str);
