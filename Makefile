@@ -3,8 +3,8 @@ SRCS	:= miniRT.c \
 			validity_tools/scene_verifier_pt_three.c validity_tools/scene_verifier_pt_four.c validity_tools/scene_verifier_pt_five.c \
 			validity_tools/scene_verifier_pt_six.c validity_tools/scene_verifier_pt_seven.c \
 			parser/parse_scene_pt_one.c parser/parse_scene_pt_two.c parser/parse_scene_pt_three.c parser/parse_scene_pt_four.c \
-			parser/parse_scene_pt_five.c parser/parse_scene_pt_six.c \
-			utils/file_reader.c utils/utils_pt_one.c utils/utils_pt_two.c utils/utils_pt_three.c \
+			parser/parse_scene_pt_five.c parser/parse_scene_pt_six.c parser/parse_scene_pt_seven.c parser/parse_scene_pt_eight.c \
+			utils/file_reader.c utils/utils_pt_one.c utils/utils_pt_two.c utils/utils_pt_three.c utils/utils_pt_four.c \
 			tmp_funcs/print_scene.c
 LIBS	:= -lm
 NAME	:=	miniRT

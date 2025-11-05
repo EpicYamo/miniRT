@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:40:05 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/04 14:34:30 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/05 15:13:28 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ static void	print_cylinder_data(t_scene *scene);
 
 void	print_the_scene(t_scene *scene)
 {
-	printf("\nAmbient Light\nExistence: %d\n", scene->ambient_data.existence);
+	printf("\nAmbient Light\nExistence: %d\n--------\n", scene->ambient_data.existence);
 	printf("raio: %d\n", scene->ambient_data.ratio);
 	printf("color_red: %d\ncolor_green: %d\ncolor_blue: %d\n\n",
 		scene->ambient_data.red, scene->ambient_data.green,
 		scene->ambient_data.blue);
-	printf("Camera\nExistence: %d\n", scene->camera_data.existence);
+	printf("Camera\nExistence: %d\n--------\n", scene->camera_data.existence);
 	printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
 		scene->camera_data.pos_x, scene->camera_data.pos_y,
 		scene->camera_data.pos_z);
@@ -32,7 +32,7 @@ void	print_the_scene(t_scene *scene)
 		scene->camera_data.vector_x, scene->camera_data.vector_y,
 		scene->camera_data.vector_z);
 	printf("fov: %d\n\n", scene->camera_data.fov);
-	printf("Light\nExistence: %d\n", scene->light_data.existence);
+	printf("Light\nExistence: %d\n--------\n", scene->light_data.existence);
 	printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
 		scene->light_data.pos_x, scene->light_data.pos_y,
 		scene->light_data.pos_z);
@@ -46,7 +46,7 @@ static void	print_sphere_data(t_scene *scene)
 {
 	size_t	i;
 
-	printf("Sphere\nSphere Count: %ld\n", scene->element_counts.sphere_count);
+	printf("Sphere\nSphere Count: %ld\n--------\n", scene->element_counts.sphere_count);
 	if ((scene->element_counts.sphere_count == 0)
 		|| (scene->sphere_data == NULL))
 	{
@@ -72,7 +72,7 @@ static void	print_plane_data(t_scene *scene)
 {
 	size_t	i;
 
-	printf("Plane\nPlane Count: %ld\n", scene->element_counts.plane_count);
+	printf("Plane\nPlane Count: %ld\n--------\n", scene->element_counts.plane_count);
 	if ((scene->element_counts.plane_count == 0) || (scene->plane_data == NULL))
 	{
 		printf("\n");
@@ -99,7 +99,7 @@ static void	print_cylinder_data(t_scene *scene)
 {
 	size_t	i;
 
-	printf("Cylinder\nCylinder Count: %ld\n",
+	printf("Cylinder\nCylinder Count: %ld\n--------\n",
 		scene->element_counts.cylinder_count);
 	if ((scene->element_counts.cylinder_count == 0)
 		|| (scene->cylinder_data == NULL))

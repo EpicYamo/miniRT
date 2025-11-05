@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 10:36:51 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/01 14:12:36 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/05 15:10:50 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,14 @@ void	check_diameter_height(char **scene, char *value)
 	}
 	if (dot_count > 1)
 		free_arr_error_message(scene);
+	if (dot_count == 1)
+	{
+		while (*value != '.')
+			value++;
+		value++;
+		if (!ft_isdigit(*value))
+			free_arr_error_message(scene);
+	}
 }
 
 void	validate_plane_data(char **scene)

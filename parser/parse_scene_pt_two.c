@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 22:58:08 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/04 14:21:31 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/05 14:45:54 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	fill_ambient_ratio(t_scene *scene, char *ratio)
 			= ((ft_atoi(ratio) * 10) + (ft_atoi(ratio + 2)));
 }
 
-void	fill_ambient_colors_range(t_scene *scene, char *range)
+void	fill_ambient_colors(t_scene *scene, char *range)
 {
 	scene->ambient_data.red = ft_atoi(range);
 	while (*range != ',')
