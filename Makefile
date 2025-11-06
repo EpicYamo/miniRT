@@ -4,6 +4,8 @@ SRCS	:= miniRT.c \
 			validity_tools/scene_verifier_pt_six.c validity_tools/scene_verifier_pt_seven.c \
 			parser/parse_scene_pt_one.c parser/parse_scene_pt_two.c parser/parse_scene_pt_three.c parser/parse_scene_pt_four.c \
 			parser/parse_scene_pt_five.c parser/parse_scene_pt_six.c parser/parse_scene_pt_seven.c parser/parse_scene_pt_eight.c \
+			parser/parse_scene_pt_nine.c parser/parse_scene_pt_ten.c parser/parse_scene_pt_eleven.c parser/parse_scene_pt_twelve.c \
+			parser/parse_scene_pt_thirteen.c \
 			utils/file_reader.c utils/utils_pt_one.c utils/utils_pt_two.c utils/utils_pt_three.c utils/utils_pt_four.c \
 			tmp_funcs/print_scene.c
 LIBS	:= -lm

@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:40:05 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/05 15:13:28 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/06 13:42:11 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ static void	print_cylinder_data(t_scene *scene);
 
 void	print_the_scene(t_scene *scene)
 {
-	printf("\nAmbient Light\nExistence: %d\n--------\n", scene->ambient_data.existence);
+	printf("\nAmbient Light\nExistence: %d\n--------\n",
+		scene->ambient_data.existence);
 	printf("raio: %d\n", scene->ambient_data.ratio);
 	printf("color_red: %d\ncolor_green: %d\ncolor_blue: %d\n\n",
 		scene->ambient_data.red, scene->ambient_data.green,
@@ -46,7 +47,8 @@ static void	print_sphere_data(t_scene *scene)
 {
 	size_t	i;
 
-	printf("Sphere\nSphere Count: %ld\n--------\n", scene->element_counts.sphere_count);
+	printf("Sphere\nSphere Count: %ld\n--------\n",
+		scene->element_counts.sphere_count);
 	if ((scene->element_counts.sphere_count == 0)
 		|| (scene->sphere_data == NULL))
 	{
@@ -72,7 +74,8 @@ static void	print_plane_data(t_scene *scene)
 {
 	size_t	i;
 
-	printf("Plane\nPlane Count: %ld\n--------\n", scene->element_counts.plane_count);
+	printf("Plane\nPlane Count: %ld\n--------\n",
+		scene->element_counts.plane_count);
 	if ((scene->element_counts.plane_count == 0) || (scene->plane_data == NULL))
 	{
 		printf("\n");

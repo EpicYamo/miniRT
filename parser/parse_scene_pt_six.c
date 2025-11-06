@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:31:06 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/05 15:07:00 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/06 13:41:14 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ void	create_parameter_count(t_scene *scene, char **scene_map)
 
 static void	allocate_sphere_space(t_scene *scene)
 {
-	scene->sphere_data = malloc(sizeof(t_sphere_data) * scene->element_counts.sphere_count);
+	scene->sphere_data
+		= malloc(sizeof(t_sphere_data) * scene->element_counts.sphere_count);
 	if (!(scene->sphere_data))
 	{
 		free(scene);
@@ -51,7 +52,8 @@ static void	allocate_sphere_space(t_scene *scene)
 
 static void	allocate_plane_space(t_scene *scene)
 {
-	scene->plane_data = malloc(sizeof(t_plane_data) * scene->element_counts.plane_count);
+	scene->plane_data
+		= malloc(sizeof(t_plane_data) * scene->element_counts.plane_count);
 	if (!(scene->plane_data))
 	{
 		free(scene->sphere_data);
@@ -62,7 +64,8 @@ static void	allocate_plane_space(t_scene *scene)
 
 static void	allocate_cylinder_space(t_scene *scene)
 {
-	scene->cylinder_data = malloc(sizeof(t_cylinder_data) * scene->element_counts.cylinder_count);
+	scene->cylinder_data = malloc(sizeof(t_cylinder_data)
+			* scene->element_counts.cylinder_count);
 	if (!(scene->cylinder_data))
 	{
 		free(scene->sphere_data);

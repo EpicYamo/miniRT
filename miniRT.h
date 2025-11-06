@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/05 14:56:59 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/06 13:50:22 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,15 @@ void	increment_index_to_the_next_param(char *scene_map, size_t *j);
 void	fill_sphere_coordinates(t_scene *scene, char *coords, int index);
 void	fill_sphere_diameter(t_scene *scene, char *diameter, int index);
 void	fill_sphere_colors(t_scene *scene, char *range, int index);
+void	create_plane_data(t_scene *scene, char **scene_map);
+void	fill_plane_coordinates(t_scene *scene, char *coords, int index);
+void	fill_plane_vector(t_scene *scene, char *vector, int index);
+void	create_cylinder_data(t_scene *scene, char **scene_map);
+void	fill_cylinder_coordinates(t_scene *scene, char *coords, int index);
+void	fill_cylinder_vector(t_scene *scene, char *vector, int index);
+void	fill_cylinder_diameter(t_scene *scene, char *diameter, int index);
+void	fill_cylinder_height(t_scene *scene, char *height, int index);
+void	fill_cylinder_colors(t_scene *scene, char *range, int index);
 
 size_t	ft_strlen(const char *s);
 void	error_message(int code, char *str);
@@ -143,6 +152,7 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_isdigit(int d);
 int		ft_atoi(const char *str);
 void	free_arr_error_message(char **scene);
+void	free_scene(char *file_path);
 
 void	print_the_scene(t_scene *scene);
 
