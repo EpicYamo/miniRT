@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:40:05 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/06 13:42:11 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/07 12:31:32 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,39 @@
 static void	print_sphere_data(t_scene *scene);
 static void	print_plane_data(t_scene *scene);
 static void	print_cylinder_data(t_scene *scene);
+static void	print_light_data(t_scene *scene);
 
 void	print_the_scene(t_scene *scene)
 {
 	printf("\nAmbient Light\nExistence: %d\n--------\n",
 		scene->ambient_data.existence);
-	printf("raio: %d\n", scene->ambient_data.ratio);
-	printf("color_red: %d\ncolor_green: %d\ncolor_blue: %d\n\n",
-		scene->ambient_data.red, scene->ambient_data.green,
-		scene->ambient_data.blue);
+	if (scene->ambient_data.existence == 1)
+	{
+		printf("raio: %d\n", scene->ambient_data.ratio);
+		printf("color_red: %d\ncolor_green: %d\ncolor_blue: %d\n\n",
+			scene->ambient_data.red, scene->ambient_data.green,
+			scene->ambient_data.blue);
+	}
+	else
+		printf("\n");
 	printf("Camera\nExistence: %d\n--------\n", scene->camera_data.existence);
-	printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
-		scene->camera_data.pos_x, scene->camera_data.pos_y,
-		scene->camera_data.pos_z);
-	printf("v_pos_x: %d\nv_pos_y: %d\nv_pos_z: %d\n",
-		scene->camera_data.vector_x, scene->camera_data.vector_y,
-		scene->camera_data.vector_z);
-	printf("fov: %d\n\n", scene->camera_data.fov);
+	if (scene->camera_data.existence == 1)
+	{
+		printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
+			scene->camera_data.pos_x, scene->camera_data.pos_y,
+			scene->camera_data.pos_z);
+		printf("v_pos_x: %d\nv_pos_y: %d\nv_pos_z: %d\n",
+			scene->camera_data.vector_x, scene->camera_data.vector_y,
+			scene->camera_data.vector_z);
+		printf("fov: %d\n\n", scene->camera_data.fov);	
+	}
+	else
+		printf("\n");
+	print_light_data(scene);
+}
+
+static void	print_light_data(t_scene *scene)
+{
 	printf("Light\nExistence: %d\n--------\n", scene->light_data.existence);
 	printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
 		scene->light_data.pos_x, scene->light_data.pos_y,
