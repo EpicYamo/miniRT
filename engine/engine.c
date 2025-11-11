@@ -1,33 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_pt_four.c                                    :+:      :+:    :+:   */
+/*   engine.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/05 14:03:46 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/11 11:42:46 by aaycan           ###   ########.fr       */
+/*   Created: 2025/11/11 11:40:19 by aaycan            #+#    #+#             */
+/*   Updated: 2025/11/11 11:55:02 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
-#include <stdlib.h>
+#include "../minilibx-linux/mlx.h"
 
-void	increment_index_to_the_next_param(char *scene_map, size_t *j)
-{
-	while (scene_map[*j] != ' ')
-		(*j)++;
-	while (scene_map[*j] == ' ')
-		(*j)++;
-}
-
-void	free_scene(void)
+void	run_engine(void)
 {
 	t_scene	*scene;
 
 	scene = parse_scene(NULL);
-	free(scene->cylinder_data);
-	free(scene->plane_data);
-	free(scene->sphere_data);
-	free(scene);
+	(void)scene;
 }

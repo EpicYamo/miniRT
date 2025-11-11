@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:40:05 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/07 12:31:32 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/11 11:58:50 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	print_the_scene(t_scene *scene)
 		printf("v_pos_x: %d\nv_pos_y: %d\nv_pos_z: %d\n",
 			scene->camera_data.vector_x, scene->camera_data.vector_y,
 			scene->camera_data.vector_z);
-		printf("fov: %d\n\n", scene->camera_data.fov);	
+		printf("fov: %d\n\n", scene->camera_data.fov);
 	}
 	else
 		printf("\n");
