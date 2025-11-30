@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/11 23:34:39 by aaycan           ###   ########.fr       */
+/*   Updated: 2025/11/30 19:20:12 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,8 +149,6 @@ void	fill_cylinder_diameter(t_scene *scene, char *diameter, int index);
 void	fill_cylinder_height(t_scene *scene, char *height, int index);
 void	fill_cylinder_colors(t_scene *scene, char *range, int index);
 void	run_engine(void);
-int		exit_button(t_data *rt_data);
-int		exit_esc(int key, t_data *rt_data);
 
 size_t	ft_strlen(const char *s);
 void	error_message(int code, char *str);
