@@ -6,7 +6,7 @@ SRCS	:= miniRT.c \
 			parser/parse_scene_pt_five.c parser/parse_scene_pt_six.c parser/parse_scene_pt_seven.c parser/parse_scene_pt_eight.c \
 			parser/parse_scene_pt_nine.c parser/parse_scene_pt_ten.c parser/parse_scene_pt_eleven.c parser/parse_scene_pt_twelve.c \
 			parser/parse_scene_pt_thirteen.c \
-			engine/engine_pt_one.c engine/engine_pt_two.c \
+			engine/engine_pt_one.c \
 			utils/file_reader.c utils/utils_pt_one.c utils/utils_pt_two.c utils/utils_pt_three.c utils/utils_pt_four.c \
 			tmp_funcs/print_scene.c
 LIBS	:= -lm
@@ -37,16 +37,16 @@ $(OBJ_DIR)/%.o: %.c
 $(NAME): $(OBJ)
 	@printf "$(BOLD)Linking...$(RESET)\n"
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LIBS) $(MLX) -lX11 -lXext
-	@printf "$(GREEN)✔ Build complete: $(NAME)$(RESET)\n"
+	@printf "$(GREEN)Build complete: $(NAME)$(RESET)\n"
 
 clean:
 	@$(RM) $(OBJ_DIR)
-	@printf "$(BLUE)🧹 Cleaned object files$(RESET)\n"
+	@printf "$(BLUE)Cleaned object files$(RESET)\n"
 
 fclean: clean
 	@$(RM) $(NAME)
 	@make clean -C $(MLX_DIR)
-	@printf "$(BLUE)🧹 Removed binary $(NAME)$(RESET)\n"
+	@printf "$(BLUE)Removed binary $(NAME)$(RESET)\n"
 
 re: fclean all
 

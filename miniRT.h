@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/30 19:20:12 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/01/31 18:17:42 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,13 @@ typedef struct s_data
 	void	*mlx_ptr;
 	void	*mlx_window;
 }	t_data;
+
+typedef struct s_vec3
+{
+    double x;
+    double y;
+    double z;
+} t_vec3;
 
 char	*read_file(char *file_path);
 int		check_file(char *file_path);

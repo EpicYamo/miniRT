@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 11:40:19 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/30 21:15:05 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/01/31 18:17:14 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void	run_engine(void)
 	t_data	*rt_data;
 
 	init_engine_data(&rt_data);
-	init_mlx_functions(rt_data);
 	//ray_tracer(rt_data);
+	init_mlx_functions(rt_data);
 }
 
 static void	init_engine_data(t_data **rt_data)
