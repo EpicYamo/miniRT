@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/01/31 18:17:42 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/10 18:40:36 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,7 @@ int		ft_isdigit(int d);
 int		ft_atoi(const char *str);
 void	free_arr_error_message(char **scene);
 void	free_scene(void);
+double	ft_atod(const char *s);
 
 void	print_the_scene(t_scene *scene);
 

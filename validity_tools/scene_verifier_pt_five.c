@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 15:17:22 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/03 23:53:08 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/11 00:21:53 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ static void	check_seperator_count(char **scene, char *coords)
 	{
 		if (coords[i] == ',')
 			seperator_count++;
+		if (seperator_count > 2)
+			free_arr_error_message(scene);
 		if ((coords[i] != '-') && (coords[i] != '.') && (coords[i] != ',')
 			&& (!ft_isdigit(coords[i])))
 			free_arr_error_message(scene);
@@ -69,10 +71,10 @@ static void	check_coordinate_val(char **scene, char *coords)
 	{
 		if (coords[i] == '.')
 			dot_count += 1;
+		if (dot_count > 1)
+			free_arr_error_message(scene);
 		i++;
 	}
-	if (dot_count > 1)
-		free_arr_error_message(scene);
 	if (dot_count == 1)
 	{
 		while (*coords != '.')
