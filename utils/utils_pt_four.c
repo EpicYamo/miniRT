@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 14:03:46 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/11 01:11:16 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 22:12:44 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 static int		get_sign(const char **s);
 static double	parse_fraction(const char **s);
 
-void	increment_index_to_the_next_param(char *scene_map, size_t *j)
+void	skip_to_next_parameter(char **scene, size_t *i, size_t *j)
 {
-	while (scene_map[*j] != ' ')
+	while (scene[*i][*j] != ' ')
 		(*j)++;
-	while (scene_map[*j] == ' ')
+	while (scene[*i][*j] == ' ')
 		(*j)++;
 }
 

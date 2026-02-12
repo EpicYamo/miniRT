@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:40:05 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/11 11:58:50 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 21:24:58 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	print_the_scene(t_scene *scene)
 		scene->ambient_data.existence);
 	if (scene->ambient_data.existence == 1)
 	{
-		printf("raio: %d\n", scene->ambient_data.ratio);
+		printf("raio: %f\n", scene->ambient_data.ratio);
 		printf("color_red: %d\ncolor_green: %d\ncolor_blue: %d\n\n",
 			scene->ambient_data.red, scene->ambient_data.green,
 			scene->ambient_data.blue);
@@ -34,10 +34,10 @@ void	print_the_scene(t_scene *scene)
 	printf("Camera\nExistence: %d\n--------\n", scene->camera_data.existence);
 	if (scene->camera_data.existence == 1)
 	{
-		printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
+		printf("pos_x: %f\npos_y: %f\npos_z: %f\n",
 			scene->camera_data.pos_x, scene->camera_data.pos_y,
 			scene->camera_data.pos_z);
-		printf("v_pos_x: %d\nv_pos_y: %d\nv_pos_z: %d\n",
+		printf("v_pos_x: %f\nv_pos_y: %f\nv_pos_z: %f\n",
 			scene->camera_data.vector_x, scene->camera_data.vector_y,
 			scene->camera_data.vector_z);
 		printf("fov: %d\n\n", scene->camera_data.fov);
@@ -50,10 +50,10 @@ void	print_the_scene(t_scene *scene)
 static void	print_light_data(t_scene *scene)
 {
 	printf("Light\nExistence: %d\n--------\n", scene->light_data.existence);
-	printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
+	printf("pos_x: %f\npos_y: %f\npos_z: %f\n",
 		scene->light_data.pos_x, scene->light_data.pos_y,
 		scene->light_data.pos_z);
-	printf("brightness_ratio: %d\n\n", scene->light_data.brigthness);
+	printf("brightness_ratio: %f\n\n", scene->light_data.brightness);
 	print_sphere_data(scene);
 	print_plane_data(scene);
 	print_cylinder_data(scene);
@@ -75,10 +75,10 @@ static void	print_sphere_data(t_scene *scene)
 	while (i < scene->element_counts.sphere_count)
 	{
 		printf("sphere_id: %ld\n", i);
-		printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
+		printf("pos_x: %f\npos_y: %f\npos_z: %f\n",
 			scene->sphere_data[i].pos_x, scene->sphere_data[i].pos_y,
 			scene->sphere_data[i].pos_z);
-		printf("diameter: %d\n", scene->sphere_data[i].diameter);
+		printf("diameter: %f\n", scene->sphere_data[i].diameter);
 		printf("color_red: %d\ncolor_green: %d\ncolor_blue: %d\n\n",
 			scene->sphere_data[i].red, scene->sphere_data[i].green,
 			scene->sphere_data[i].blue);
@@ -101,10 +101,10 @@ static void	print_plane_data(t_scene *scene)
 	while (i < scene->element_counts.plane_count)
 	{
 		printf("plane_id: %ld\n", i);
-		printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
+		printf("pos_x: %f\npos_y: %f\npos_z: %f\n",
 			scene->plane_data[i].pos_x, scene->plane_data[i].pos_y,
 			scene->plane_data[i].pos_z);
-		printf("v_pos_x: %d\nv_pos_y: %d\nv_pos_z: %d\n",
+		printf("v_pos_x: %f\nv_pos_y: %f\nv_pos_z: %f\n",
 			scene->plane_data[i].vector_x, scene->plane_data[i].vector_y,
 			scene->plane_data[i].vector_z);
 		printf("color_red: %d\ncolor_green: %d\ncolor_blue: %d\n\n",
@@ -127,14 +127,14 @@ static void	print_cylinder_data(t_scene *scene)
 	while (i < scene->element_counts.cylinder_count)
 	{
 		printf("cylinder_id: %ld\n", i);
-		printf("pos_x: %lld\npos_y: %lld\npos_z: %lld\n",
+		printf("pos_x: %f\npos_y: %f\npos_z: %f\n",
 			scene->cylinder_data[i].pos_x, scene->cylinder_data[i].pos_y,
 			scene->cylinder_data[i].pos_z);
-		printf("v_pos_x: %d\nv_pos_y: %d\nv_pos_z: %d\n",
+		printf("v_pos_x: %f\nv_pos_y: %f\nv_pos_z: %f\n",
 			scene->cylinder_data[i].vector_x, scene->cylinder_data[i].vector_y,
 			scene->cylinder_data[i].vector_z);
-		printf("diameter: %d\n", scene->cylinder_data[i].diameter);
-		printf("height: %d\n", scene->cylinder_data[i].height);
+		printf("diameter: %f\n", scene->cylinder_data[i].diameter);
+		printf("height: %f\n", scene->cylinder_data[i].height);
 		printf("color_red: %d\ncolor_green: %d\ncolor_blue: %d\n\n",
 			scene->cylinder_data[i].red, scene->cylinder_data[i].green,
 			scene->cylinder_data[i].blue);

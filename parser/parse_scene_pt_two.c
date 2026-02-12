@@ -6,39 +6,24 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 22:58:08 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/05 14:45:54 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 22:24:48 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 
-static void	fill_light_ratio(t_scene *scene, char *ratio);
-
-void	fill_ambient_ratio(t_scene *scene, char *ratio)
+void	fill_colors(unsigned int *red, unsigned int *green,
+	unsigned int *blue, char *range)
 {
-	size_t	i;
-
-	i = 0;
-	while ((ratio[i]) && (ratio[i] != ' '))
-		i++;
-	if (i == 1)
-		scene->ambient_data.ratio = (ft_atoi(ratio) * 10);
-	else if (i == 3)
-		scene->ambient_data.ratio
-			= ((ft_atoi(ratio) * 10) + (ft_atoi(ratio + 2)));
-}
-
-void	fill_ambient_colors(t_scene *scene, char *range)
-{
-	scene->ambient_data.red = ft_atoi(range);
+	(*red) = ft_atoi(range);
 	while (*range != ',')
 		range += 1;
 	range += 1;
-	scene->ambient_data.green = ft_atoi(range);
+	(*green) = ft_atoi(range);
 	while (*range != ',')
 		range += 1;
 	range += 1;
-	scene->ambient_data.blue = ft_atoi(range);
+	(*blue) = ft_atoi(range);
 }
 
 void	fill_blank(t_scene *scene)
@@ -56,7 +41,7 @@ void	fill_blank(t_scene *scene)
 	scene->camera_data.vector_z = 0;
 	scene->camera_data.fov = 0;
 	scene->camera_data.existence = 0;
-	scene->light_data.brigthness = 0;
+	scene->light_data.brightness = 0;
 	scene->light_data.pos_x = 0;
 	scene->light_data.pos_y = 0;
 	scene->light_data.pos_z = 0;
@@ -83,26 +68,11 @@ void	create_light_data(t_scene *scene, char **scene_map)
 			j = 1;
 			while (scene_map[i][j] == ' ')
 				j++;
-			fill_light_coordinates(scene, &scene_map[i][j]);
-			while (scene_map[i][j] != ' ')
-				j++;
-			while (scene_map[i][j] == ' ')
-				j++;
-			fill_light_ratio(scene, &scene_map[i][j]);
+			fill_coordinates(&scene->light_data.pos_x,
+				&scene->light_data.pos_y, &scene->light_data.pos_z,
+				&scene_map[i][j]);
+			skip_to_next_parameter(scene_map, &i, &j);
+			scene->light_data.brightness = ft_atod(&scene_map[i][j]);
 		}
 	}
-}
-
-static void	fill_light_ratio(t_scene *scene, char *ratio)
-{
-	size_t	i;
-
-	i = 0;
-	while ((ratio[i]) && (ratio[i] != ' '))
-		i++;
-	if (i == 1)
-		scene->light_data.brigthness = (ft_atoi(ratio) * 10);
-	else if (i == 3)
-		scene->light_data.brigthness
-			= ((ft_atoi(ratio) * 10) + (ft_atoi(ratio + 2)));
 }

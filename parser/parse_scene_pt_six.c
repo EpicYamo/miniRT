@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:31:06 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/06 13:41:14 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 22:25:21 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,11 +91,15 @@ void	create_sphere_data(t_scene *scene, char **scene_map)
 			j = 2;
 			while (scene_map[i][j] == ' ')
 				j++;
-			fill_sphere_coordinates(scene, &scene_map[i][j], index);
-			increment_index_to_the_next_param(scene_map[i], &j);
-			fill_sphere_diameter(scene, &scene_map[i][j], index);
-			increment_index_to_the_next_param(scene_map[i], &j);
-			fill_sphere_colors(scene, &scene_map[i][j], index);
+			fill_coordinates(&scene->sphere_data[index].pos_x,
+				&scene->sphere_data[index].pos_y,
+				&scene->sphere_data[index].pos_z, &scene_map[i][j]);
+			skip_to_next_parameter(scene_map, &i, &j);
+			scene->sphere_data[index].diameter = ft_atod(&scene_map[i][j]);
+			skip_to_next_parameter(scene_map, &i, &j);
+			fill_colors(&scene->sphere_data[index].red,
+				&scene->sphere_data[index].green,
+				&scene->sphere_data[index].blue, &scene_map[i][j]);
 		}
 	}
 }

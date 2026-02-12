@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/12 17:33:16 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 22:22:10 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct s_scene_element_count
 typedef struct s_ambient_data
 {
 	int				existence;
-	unsigned int	ratio;
+	double			ratio;
 	unsigned int	red;
 	unsigned int	green;
 	unsigned int	blue;
@@ -33,31 +33,31 @@ typedef struct s_ambient_data
 
 typedef struct s_camera_data
 {
-	int			existence;
-	long long	pos_x;
-	long long	pos_y;
-	long long	pos_z;
-	int			vector_x;
-	int			vector_y;
-	int			vector_z;
-	int			fov;
+	int		existence;
+	double	pos_x;
+	double	pos_y;
+	double	pos_z;
+	double	vector_x;
+	double	vector_y;
+	double	vector_z;
+	int		fov;
 }	t_camera_data;
 
 typedef struct s_light_data
 {
-	int				existence;
-	long long		pos_x;
-	long long		pos_y;
-	long long		pos_z;
-	unsigned int	brigthness;
+	int		existence;
+	double	pos_x;
+	double	pos_y;
+	double	pos_z;
+	double	brightness;
 }	t_light_data;
 
 typedef struct s_sphere_data
 {
-	long long		pos_x;
-	long long		pos_y;
-	long long		pos_z;
-	unsigned int	diameter;
+	double			pos_x;
+	double			pos_y;
+	double			pos_z;
+	double			diameter;
 	unsigned int	red;
 	unsigned int	green;
 	unsigned int	blue;
@@ -65,12 +65,12 @@ typedef struct s_sphere_data
 
 typedef struct s_plane_data
 {
-	long long		pos_x;
-	long long		pos_y;
-	long long		pos_z;
-	int				vector_x;
-	int				vector_y;
-	int				vector_z;
+	double			pos_x;
+	double			pos_y;
+	double			pos_z;
+	double			vector_x;
+	double			vector_y;
+	double			vector_z;
 	unsigned int	red;
 	unsigned int	green;
 	unsigned int	blue;
@@ -78,14 +78,14 @@ typedef struct s_plane_data
 
 typedef struct s_cylinder_data
 {
-	long long		pos_x;
-	long long		pos_y;
-	long long		pos_z;
-	int				vector_x;
-	int				vector_y;
-	int				vector_z;
-	unsigned int	diameter;
-	unsigned int	height;
+	double			pos_x;
+	double			pos_y;
+	double			pos_z;
+	double			vector_x;
+	double			vector_y;
+	double			vector_z;
+	double			diameter;
+	double			height;
 	unsigned int	red;
 	unsigned int	green;
 	unsigned int	blue;
@@ -111,10 +111,10 @@ typedef struct s_data
 
 typedef struct s_vec3
 {
-    double x;
-    double y;
-    double z;
-} t_vec3;
+	double	x;
+	double	y;
+	double	z;
+}	t_vec3;
 
 char	*read_file(char *file_path);
 int		check_file(char *file_path);
@@ -134,28 +134,18 @@ void	validate_plane_data(char **scene);
 void	validate_cylinder_data(char **scene);
 void	skip_to_next_parameter(char **scene, size_t *i, size_t *j);
 t_scene	*parse_scene(char *file_path);
-void	fill_ambient_ratio(t_scene *scene, char *ratio);
-void	fill_ambient_colors(t_scene *scene, char *range);
-void	fill_camera_coordinates(t_scene *scene, char *coords);
-void	fill_camera_orientation_vector(t_scene *scene, char *vector);
+void	fill_colors(unsigned int *red, unsigned int *green,
+			unsigned int *blue, char *range);
+void	fill_coordinates(double *pos_x, double *pos_y, double *pos_z,
+			char *coords);
+void	fill_normalized_vector(double *vec_x, double *vec_y, double *vec_z,
+			char *vector);
 void	fill_blank(t_scene *scene);
 void	create_light_data(t_scene *scene, char **scene_map);
-void	fill_light_coordinates(t_scene *scene, char *coords);
 void	create_parameter_count(t_scene *scene, char **scene_map);
 void	create_sphere_data(t_scene *scene, char **scene_map);
-void	increment_index_to_the_next_param(char *scene_map, size_t *j);
-void	fill_sphere_coordinates(t_scene *scene, char *coords, int index);
-void	fill_sphere_diameter(t_scene *scene, char *diameter, int index);
-void	fill_sphere_colors(t_scene *scene, char *range, int index);
 void	create_plane_data(t_scene *scene, char **scene_map);
-void	fill_plane_coordinates(t_scene *scene, char *coords, int index);
-void	fill_plane_vector(t_scene *scene, char *vector, int index);
 void	create_cylinder_data(t_scene *scene, char **scene_map);
-void	fill_cylinder_coordinates(t_scene *scene, char *coords, int index);
-void	fill_cylinder_vector(t_scene *scene, char *vector, int index);
-void	fill_cylinder_diameter(t_scene *scene, char *diameter, int index);
-void	fill_cylinder_height(t_scene *scene, char *height, int index);
-void	fill_cylinder_colors(t_scene *scene, char *range, int index);
 void	run_engine(void);
 
 size_t	ft_strlen(const char *s);

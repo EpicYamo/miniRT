@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 10:46:45 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/01 14:15:48 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 22:12:29 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,4 @@ void	validate_cylinder_data(char **scene)
 			check_colors_range(scene, &scene[i][j]);
 		}
 	}
-}
-
-void	skip_to_next_parameter(char **scene, size_t *i, size_t *j)
-{
-	while (scene[*i][*j] != ' ')
-		(*j)++;
-	while (scene[*i][*j] == ' ')
-		(*j)++;
 }
