@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 10:36:51 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/05 15:10:50 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 17:35:33 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,28 +66,28 @@ void	validate_sphere_data(char **scene)
 void	check_diameter_height(char **scene, char *value)
 {
 	size_t	i;
-	size_t	dot_count;
+	double	d_value;
 
-	i = 0;
-	dot_count = 0;
-	while ((value[i]) && (value[i] != ' '))
-	{
-		if ((value[i] != '.') && (!ft_isdigit(value[i])))
-			free_arr_error_message(scene);
-		if (value[i] == '.')
-			dot_count++;
-		i++;
-	}
-	if (dot_count > 1)
+	if (!(ft_isdigit(value[0])))
 		free_arr_error_message(scene);
-	if (dot_count == 1)
+	i = 0;
+	while (ft_isdigit(value[i]))
+		i++;
+	if (value[i] == '.')
 	{
-		while (*value != '.')
-			value++;
-		value++;
-		if (!ft_isdigit(*value))
+		i++;
+		if (!ft_isdigit(value[i]))
+			free_arr_error_message(scene);
+		while (ft_isdigit(value[i]))
+			i++;
+		if (value[i] != ' ')
 			free_arr_error_message(scene);
 	}
+	else if (value[i] != ' ')
+		free_arr_error_message(scene);
+	d_value = ft_atod(value);
+	if (d_value < 0.0)
+		free_arr_error_message(scene);
 }
 
 void	validate_plane_data(char **scene)
@@ -108,7 +108,7 @@ void	validate_plane_data(char **scene)
 				j++;
 			while (scene[i][j] == ' ')
 				j++;
-			check_vector_val(scene, &scene[i][j]);
+			check_normalized_vector(scene, &scene[i][j]);
 			while (scene[i][j] != ' ')
 				j++;
 			while (scene[i][j] == ' ')

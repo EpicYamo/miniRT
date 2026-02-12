@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/10 18:40:36 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 17:33:16 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ void	validate_camera_data(char **scene);
 void	check_coordinates(char **scene, char *coords);
 void	check_vector_val(char **scene, char *vector);
 void	validate_light_data(char **scene);
+void	check_normalized_vector(char **scene, char *vector);
 void	check_ratio(char **scene, char *ratio);
 void	check_colors_range(char **scene, char *range);
 void	validate_sphere_data(char **scene);

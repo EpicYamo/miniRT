@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 15:17:22 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/11 00:21:53 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 17:41:21 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,38 +49,35 @@ static void	check_seperator_count(char **scene, char *coords)
 			seperator_count++;
 		if (seperator_count > 2)
 			free_arr_error_message(scene);
-		if ((coords[i] != '-') && (coords[i] != '.') && (coords[i] != ',')
-			&& (!ft_isdigit(coords[i])))
-			free_arr_error_message(scene);
 		i++;
 	}
-	if (seperator_count != 2)
-		free_arr_error_message(scene);
 }
 
 static void	check_coordinate_val(char **scene, char *coords)
 {
 	size_t	i;
-	size_t	dot_count;
 
 	if ((coords[0] == ',') || (coords[0] == '.'))
 		free_arr_error_message(scene);
 	i = 0;
-	dot_count = 0;
-	while ((coords[i]) && (coords[i] != ',') && (coords[i] != ' '))
+	if (coords[i] == '-')
+		i++;
+	while ((coords[i] != '\0') && (coords[i] != ',') && (coords[i] != ' ')
+		&& (coords[i] != '.'))
 	{
-		if (coords[i] == '.')
-			dot_count += 1;
-		if (dot_count > 1)
+		if (!(ft_isdigit(coords[i])))
 			free_arr_error_message(scene);
 		i++;
 	}
-	if (dot_count == 1)
+	if ((coords[i] != '.') && ((coords[i] == ' ') || (coords[i] == ',')))
+		return ;
+	if (coords[i] != '.')
+		free_arr_error_message(scene);
+	i++;
+	while ((coords[i] != '\0') && (coords[i] != ',') && (coords[i] != ' '))
 	{
-		while (*coords != '.')
-			coords++;
-		coords++;
-		if (!ft_isdigit(*coords))
+		if (!(ft_isdigit(coords[i])))
 			free_arr_error_message(scene);
+		i++;
 	}
 }

@@ -6,13 +6,12 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 21:50:33 by aaycan            #+#    #+#             */
-/*   Updated: 2025/11/01 10:35:15 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 17:32:53 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 
-static void	check_camera_orientation_vector(char **scene, char *vector);
 static void	check_camera_fov(char **scene, char *fov);
 
 void	validate_camera_data(char **scene)
@@ -33,7 +32,7 @@ void	validate_camera_data(char **scene)
 				j++;
 			while (scene[i][j] == ' ')
 				j++;
-			check_camera_orientation_vector(scene, &scene[i][j]);
+			check_normalized_vector(scene, &scene[i][j]);
 			while (scene[i][j] != ' ')
 				j++;
 			while (scene[i][j] == ' ')
@@ -43,7 +42,7 @@ void	validate_camera_data(char **scene)
 	}
 }
 
-static void	check_camera_orientation_vector(char **scene, char *vector)
+void	check_normalized_vector(char **scene, char *vector)
 {
 	size_t	i;
 	size_t	seperator_count;
