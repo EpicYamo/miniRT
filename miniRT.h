@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/12 22:22:10 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/13 02:47:09 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,8 @@ void	fill_coordinates(double *pos_x, double *pos_y, double *pos_z,
 			char *coords);
 void	fill_normalized_vector(double *vec_x, double *vec_y, double *vec_z,
 			char *vector);
-void	fill_blank(t_scene *scene);
+void	create_ambient_data(t_scene *scene, char **scene_map);
+void	create_camera_data(t_scene *scene, char **scene_map);
 void	create_light_data(t_scene *scene, char **scene_map);
 void	create_parameter_count(t_scene *scene, char **scene_map);
 void	create_sphere_data(t_scene *scene, char **scene_map);

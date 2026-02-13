@@ -5,23 +5,101 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/03 23:43:32 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/12 21:56:20 by aaycan           ###   ########.fr       */
+/*   Created: 2025/11/04 13:31:06 by aaycan            #+#    #+#             */
+/*   Updated: 2026/02/13 02:50:35 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
+#include <stdlib.h>
 
-void	fill_normalized_vector(double *vec_x, double *vec_y, double *vec_z,
-	char *vector)
+static void	allocate_sphere_space(t_scene *scene);
+static void	allocate_plane_space(t_scene *scene);
+static void	allocate_cylinder_space(t_scene *scene);
+
+void	create_parameter_count(t_scene *scene, char **scene_map)
 {
-	(*vec_x) = ft_atod(vector);
-	while (*vector != ',')
-		vector += 1;
-	vector += 1;
-	(*vec_y) = ft_atod(vector);
-	while (*vector != ',')
-		vector += 1;
-	vector += 1;
-	(*vec_z) = ft_atod(vector);
+	size_t	i;
+
+	i = -1;
+	while (scene_map[++i])
+	{
+		if (scene_map[i][0] == 's')
+			scene->element_counts.sphere_count += 1;
+		else if (scene_map[i][0] == 'p')
+			scene->element_counts.plane_count += 1;
+		else if (scene_map[i][0] == 'c')
+			scene->element_counts.cylinder_count += 1;
+	}
+	if (scene->element_counts.sphere_count > 0)
+		allocate_sphere_space(scene);
+	if (scene->element_counts.plane_count > 0)
+		allocate_plane_space(scene);
+	if (scene->element_counts.cylinder_count > 0)
+		allocate_cylinder_space(scene);
+}
+
+static void	allocate_sphere_space(t_scene *scene)
+{
+	scene->sphere_data
+		= malloc(sizeof(t_sphere_data) * scene->element_counts.sphere_count);
+	if (!(scene->sphere_data))
+	{
+		free(scene);
+		error_message(1, "allocation failed");
+	}
+}
+
+static void	allocate_plane_space(t_scene *scene)
+{
+	scene->plane_data
+		= malloc(sizeof(t_plane_data) * scene->element_counts.plane_count);
+	if (!(scene->plane_data))
+	{
+		free(scene->sphere_data);
+		free(scene);
+		error_message(1, "allocation failed");
+	}
+}
+
+static void	allocate_cylinder_space(t_scene *scene)
+{
+	scene->cylinder_data = malloc(sizeof(t_cylinder_data)
+			* scene->element_counts.cylinder_count);
+	if (!(scene->cylinder_data))
+	{
+		free(scene->sphere_data);
+		free(scene->plane_data);
+		free(scene);
+		error_message(1, "allocation failed");
+	}
+}
+
+void	create_sphere_data(t_scene *scene, char **scene_map)
+{
+	size_t	i;
+	size_t	j;
+	size_t	index;
+
+	index = -1;
+	i = -1;
+	while (scene_map[++i])
+	{
+		if (scene_map[i][0] == 's')
+		{
+			index++;
+			j = 2;
+			while (scene_map[i][j] == ' ')
+				j++;
+			fill_coordinates(&scene->sphere_data[index].pos_x,
+				&scene->sphere_data[index].pos_y,
+				&scene->sphere_data[index].pos_z, &scene_map[i][j]);
+			skip_to_next_parameter(scene_map, &i, &j);
+			scene->sphere_data[index].diameter = ft_atod(&scene_map[i][j]);
+			skip_to_next_parameter(scene_map, &i, &j);
+			fill_colors(&scene->sphere_data[index].red,
+				&scene->sphere_data[index].green,
+				&scene->sphere_data[index].blue, &scene_map[i][j]);
+		}
+	}
 }

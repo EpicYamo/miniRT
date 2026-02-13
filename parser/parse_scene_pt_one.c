@@ -6,16 +6,15 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 14:17:15 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/12 22:24:31 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/13 02:45:57 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 #include <stdlib.h>
 
+static void	fill_blank(t_scene *scene);
 static void	create_scene(char **scene_map, t_scene **scene);
-static void	create_ambient_data(t_scene *scene, char **scene_map);
-static void	create_camera_data(t_scene *scene, char **scene_map);
 
 t_scene	*parse_scene(char *file_path)
 {
@@ -59,51 +58,30 @@ static void	create_scene(char **scene_map, t_scene **scene)
 	free_two_dim_array(scene_map);
 }
 
-static void	create_ambient_data(t_scene *scene, char **scene_map)
+static void	fill_blank(t_scene *scene)
 {
-	size_t	i;
-	size_t	j;
-
-	i = -1;
-	while (scene_map[++i])
-	{
-		if (scene_map[i][0] == 'A')
-		{
-			scene->ambient_data.existence = 1;
-			j = 1;
-			while (scene_map[i][j] == ' ')
-				j++;
-			scene->ambient_data.ratio = ft_atod(&scene_map[i][j]);
-			skip_to_next_parameter(scene_map, &i, &j);
-			fill_colors(&scene->ambient_data.red, &scene->ambient_data.green,
-				&scene->ambient_data.blue, &scene_map[i][j]);
-		}
-	}
-}
-
-static void	create_camera_data(t_scene *scene, char **scene_map)
-{
-	size_t	i;
-	size_t	j;
-
-	i = -1;
-	while (scene_map[++i])
-	{
-		if (scene_map[i][0] == 'C')
-		{
-			scene->camera_data.existence = 1;
-			j = 1;
-			while (scene_map[i][j] == ' ')
-				j++;
-			fill_coordinates(&scene->camera_data.pos_x,
-				&scene->camera_data.pos_y, &scene->camera_data.pos_z,
-				&scene_map[i][j]);
-			skip_to_next_parameter(scene_map, &i, &j);
-			fill_normalized_vector(&scene->camera_data.vector_x,
-				&scene->camera_data.vector_y, &scene->camera_data.vector_z,
-				&scene_map[i][j]);
-			skip_to_next_parameter(scene_map, &i, &j);
-			scene->camera_data.fov = ft_atoi(&scene_map[i][j]);
-		}
-	}
+	scene->ambient_data.ratio = 0;
+	scene->ambient_data.red = 0;
+	scene->ambient_data.green = 0;
+	scene->ambient_data.blue = 0;
+	scene->ambient_data.existence = 0;
+	scene->camera_data.pos_x = 0;
+	scene->camera_data.pos_y = 0;
+	scene->camera_data.pos_z = 0;
+	scene->camera_data.vector_x = 0;
+	scene->camera_data.vector_y = 0;
+	scene->camera_data.vector_z = 0;
+	scene->camera_data.fov = 0;
+	scene->camera_data.existence = 0;
+	scene->light_data.brightness = 0;
+	scene->light_data.pos_x = 0;
+	scene->light_data.pos_y = 0;
+	scene->light_data.pos_z = 0;
+	scene->light_data.existence = 0;
+	scene->element_counts.cylinder_count = 0;
+	scene->element_counts.plane_count = 0;
+	scene->element_counts.sphere_count = 0;
+	scene->sphere_data = NULL;
+	scene->plane_data = NULL;
+	scene->cylinder_data = NULL;
 }

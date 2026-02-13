@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 21:32:09 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/11 01:22:31 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/13 03:10:15 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,32 +60,6 @@ void	validate_ambient_data(char **scene)
 			check_colors_range(scene, &scene[i][j]);
 		}
 	}
-}
-
-void	check_ratio(char **scene, char *ratio)
-{
-	size_t	i;
-	double	d_ratio;
-
-	if (!(ft_isdigit(ratio[0])))
-		free_arr_error_message(scene);
-	i = 0;
-	while (ft_isdigit(ratio[i]))
-		i++;
-	if ((i == 1) && (ratio[i] == ' ') && ((ratio[0] == '0') || (ratio[0] == '1')))
-		return ;
-	if (ratio[i] != '.')
-		free_arr_error_message(scene);
-	i++;
-	if (!ft_isdigit(ratio[i]))
-		free_arr_error_message(scene);
-	while (ft_isdigit(ratio[i]))
-		i++;
-	if ((ratio[i] != ' ') && (ratio[i] != '\0'))
-		free_arr_error_message(scene);
-	d_ratio = ft_atod(ratio);
-	if (d_ratio < 0.0 || d_ratio > 1.0)
-		free_arr_error_message(scene);
 }
 
 void	check_colors_range(char **scene, char *range)
