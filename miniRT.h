@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/13 02:47:09 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/15 16:29:02 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,13 @@ int		ft_atoi(const char *str);
 void	free_arr_error_message(char **scene);
 void	free_scene(void);
 double	ft_atod(const char *s);
+t_vec3	vec3_create(double x, double y, double z);
+t_vec3	vec3_add(t_vec3 a, t_vec3 b);
+t_vec3	vec3_sub(t_vec3 a, t_vec3 b);
+t_vec3	vec3_mul(t_vec3 v, double t);
+double	vec3_dot(t_vec3 a, t_vec3 b);
+double	vec3_length(t_vec3 v);
+t_vec3	vec3_normalize(t_vec3 v);
 
 void	print_the_scene(t_scene *scene);
 
