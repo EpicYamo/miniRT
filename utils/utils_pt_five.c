@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   miniRT.c                                           :+:      :+:    :+:   */
+/*   utils_pt_five.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/26 16:34:17 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/15 16:48:45 by aaycan           ###   ########.fr       */
+/*   Created: 2026/02/16 20:51:34 by aaycan            #+#    #+#             */
+/*   Updated: 2026/02/16 21:01:48 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include <stddef.h>
 
-int	main(int argc, char **argv)
+int	check_seperator_count(char *str, size_t count)
 {
-	if (!((argc == 2) && (!check_file(argv[1]))))
-		error_message(1, "faulty file format");
-	parse_scene(argv[1]);
-	//print_the_scene(parse_scene(NULL));
-	run_engine();
-	free_scene();
-	return (0);
+	size_t	i;
+	size_t	s_count;
+
+	s_count = 0;
+	i = 0;
+	if (!(str))
+		return (0);
+	while (str[i] && (str[i] != ' '))
+	{
+		if (str[i] == ',')
+			s_count++;
+		i++;
+	}
+	if (count == s_count)
+		return (1);
+	else
+		return (0);
 }

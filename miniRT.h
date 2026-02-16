@@ -6,12 +6,16 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/15 16:29:02 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/16 21:18:32 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
+
+# define WIDTH 1000
+# define HEIGHT 1000
+# define M_PI 3.14159265358979323846
 
 # include <stddef.h>
 
@@ -116,6 +120,12 @@ typedef struct s_vec3
 	double	z;
 }	t_vec3;
 
+typedef struct s_ray
+{
+	t_vec3 origin;
+	t_vec3 direction;
+}	t_ray;
+
 char	*read_file(char *file_path);
 int		check_file(char *file_path);
 void	check_scene(char *file_path);
@@ -168,7 +178,13 @@ t_vec3	vec3_mul(t_vec3 v, double t);
 double	vec3_dot(t_vec3 a, t_vec3 b);
 double	vec3_length(t_vec3 v);
 t_vec3	vec3_normalize(t_vec3 v);
-
+t_vec3	vec3_cross(t_vec3 a, t_vec3 b);
+int		check_seperator_count(char *str, size_t count);
 void	print_the_scene(t_scene *scene);
+int		ray_sphere_intersect(t_ray ray, t_sphere_data sphere, double *t_hit);
+void	render_scene(t_data *data);
+t_ray	generate_ray(t_scene *scene, int x, int y);
+void	put_pixel(t_data *data, int x, int y, int color);
+void	render_pixel(t_data *data, int x, int y);
 
 #endif

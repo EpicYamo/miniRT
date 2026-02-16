@@ -6,14 +6,13 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 11:40:19 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/15 16:29:04 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/15 18:20:47 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 #include "../minilibx-linux/mlx.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 static void	init_engine_data(t_data **rt_data);
 static void	init_mlx_functions(t_data *rt_data);
@@ -25,7 +24,7 @@ void	run_engine(void)
 	t_data	*rt_data;
 
 	init_engine_data(&rt_data);
-	//ray_tracer(rt_data);
+	render_scene(rt_data);
 	init_mlx_functions(rt_data);
 }
 
@@ -46,7 +45,7 @@ static void	init_engine_data(t_data **rt_data)
 		error_message(1, "Memory Allocation");
 	}
 	(*rt_data)->mlx_window
-		= mlx_new_window((*rt_data)->mlx_ptr, 800, 600, "miniRT");
+		= mlx_new_window((*rt_data)->mlx_ptr, WIDTH, HEIGHT, "miniRT");
 	if (!((*rt_data)->mlx_window))
 	{
 		mlx_destroy_display((*rt_data)->mlx_ptr);

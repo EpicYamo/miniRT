@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 16:37:44 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/13 03:11:48 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/16 21:12:31 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,9 @@ void	check_vector_val(char **scene, char *vector)
 
 	if (!(ft_isdigit(vector[0])) && (vector[0] != '-'))
 		free_arr_error_message(scene);
+	i = 0;
 	if (vector[0] == '-')
 		i = 1;
-	else
-		i = 0;
 	while (ft_isdigit(vector[i]))
 		i++;
 	if (((vector[i] == ' ' || vector[i] == ','))
@@ -56,7 +55,7 @@ void	validate_cylinder_data(char **scene)
 				j++;
 			check_coordinates(scene, &scene[i][j]);
 			skip_to_next_parameter(scene, &i, &j);
-			check_vector_val(scene, &scene[i][j]);
+			check_normalized_vector(scene, &scene[i][j]);
 			skip_to_next_parameter(scene, &i, &j);
 			check_diameter_height(scene, &scene[i][j]);
 			skip_to_next_parameter(scene, &i, &j);

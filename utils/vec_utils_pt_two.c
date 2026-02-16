@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 16:04:07 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/15 16:13:23 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/15 16:33:55 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,14 @@ double	vec3_length(t_vec3 v)
 
 	len = sqrt(vec3_dot(v, v));
 	return (len);
+}
+
+t_vec3	vec3_normalize(t_vec3 v)
+{
+	double	len;
+
+	len = vec3_length(v);
+	if (len == 0.0)
+		return (vec3_create(0, 0, 0));
+	return (vec3_mul(v, 1 / len));
 }

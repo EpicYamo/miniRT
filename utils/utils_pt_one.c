@@ -6,11 +6,10 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:56:13 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/31 15:41:22 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/16 20:51:08 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
