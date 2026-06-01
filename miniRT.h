@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/16 21:18:32 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/06/01 19:55:33 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,21 @@ typedef struct s_ray
 	t_vec3 origin;
 	t_vec3 direction;
 }	t_ray;
+
+typedef struct s_img
+{
+    void	*img_ptr;
+    char	*addr;
+    int		bits_per_pixel;
+    int		line_length;
+    int		endian;
+}	t_img;
+
+typedef struct s_rt
+{
+	t_data	*old_data;
+	t_img	img;
+}	t_rt;
 
 char	*read_file(char *file_path);
 int		check_file(char *file_path);
