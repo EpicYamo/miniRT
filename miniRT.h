@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/06/29 19:20:13 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/07 20:00:20 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define WIDTH 1280
 # define HEIGHT 720
 # define M_PI 3.14159265358979323846
+# define EPSILON 1e-4
 
 # include <stddef.h>
 
@@ -141,6 +142,16 @@ typedef struct s_rt
 	t_img	img;
 }	t_rt;
 
+typedef struct s_hit
+{
+	double			t;
+	t_vec3			point;
+	t_vec3			normal;
+	unsigned int	red;
+	unsigned int	green;
+	unsigned int	blue;
+}	t_hit;
+
 char	*read_file(char *file_path);
 int		check_file(char *file_path);
 void	check_scene(char *file_path);
@@ -195,8 +206,12 @@ double	vec3_length(t_vec3 v);
 t_vec3	vec3_normalize(t_vec3 v);
 t_vec3	vec3_cross(t_vec3 a, t_vec3 b);
 int		check_seperator_count(char *str, size_t count);
-void	print_the_scene(t_scene *scene);
 void	render_scene(t_rt *rt_this);
 void	my_mlx_pixel_put(t_img *img, int x, int y, int color);
+int		intersect_sphere(t_ray ray, t_sphere_data *sphere, t_hit *hit);
+int		compute_color(t_scene *scene, t_hit *hit);
+int		is_in_shadow(t_scene *scene, t_vec3 point, t_vec3 normal, t_vec3 light_pos);
+int		intersect_plane(t_ray ray, t_plane_data *plane, t_hit *hit);
+int		intersect_cylinder(t_ray ray, t_cylinder_data *cy, t_hit *hit);
 
 #endif
