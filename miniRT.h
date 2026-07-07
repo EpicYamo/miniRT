@@ -6,15 +6,15 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/07 20:00:20 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/07 20:08:18 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
 
-# define WIDTH 1280
-# define HEIGHT 720
+# define WIDTH 2560
+# define HEIGHT 1440
 # define M_PI 3.14159265358979323846
 # define EPSILON 1e-4
 

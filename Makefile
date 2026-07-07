@@ -10,7 +10,7 @@ SRCS	:= miniRT.c \
 LIBS	:= -lm
 NAME	:=	miniRT
 CC		:=	cc
-CFLAGS	:= -Wno-incompatible-pointer-types -Wall -Wextra -Werror
+CFLAGS	:= -Wno-incompatible-pointer-types -O2 -flto -march=native
 RM		:=	rm -rf
 OBJ_DIR :=	objects
 MLX_DIR :=	./minilibx-linux
