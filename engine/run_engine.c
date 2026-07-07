@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 11:40:19 by aaycan            #+#    #+#             */
-/*   Updated: 2026/06/01 21:14:26 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/06/29 18:49:28 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	run_engine(void)
 
 	init_engine_data(&rt_this);
 	init_image_data(&rt_this);
-	//render_scene(&rt_this); (rewrite)
+	render_scene(&rt_this);
 	mlx_put_image_to_window(rt_this.old_data->mlx_ptr,
 		rt_this.old_data->mlx_window, rt_this.img.img_ptr, 0, 0);
 	init_mlx_functions(&rt_this);
@@ -84,7 +84,7 @@ static void	init_image_data(t_rt *rt_this)
 		free((*rt_this).old_data->mlx_ptr);
 		free_scene();
 		free((*rt_this).old_data);
-		error_message(1, "MLX Error Create a Image Addr"); // maybe a better desc ?
+		error_message(1, "MLX Error Creating a Image Addr"); // maybe a better desc ?
 	}
 }
 

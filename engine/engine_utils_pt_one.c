@@ -1,37 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_utils_pt_two.c                                 :+:      :+:    :+:   */
+/*   engine_utils_pt_one.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/15 16:04:07 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/15 16:33:55 by aaycan           ###   ########.fr       */
+/*   Created: 2026/06/29 19:15:34 by aaycan            #+#    #+#             */
+/*   Updated: 2026/06/29 19:15:57 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
-#include <math.h>
 
-double	vec3_dot(t_vec3 a, t_vec3 b)
+void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 {
-	return (a.x * b.x + a.y * b.y + a.z * b.z);
-}
+	char	*dst;
 
-double	vec3_length(t_vec3 v)
-{
-	double	len;
-
-	len = sqrt(vec3_dot(v, v));
-	return (len);
-}
-
-t_vec3	vec3_normalize(t_vec3 v)
-{
-	double	len;
-
-	len = vec3_length(v);
-	if (len == 0.0)
-		return (vec3_create(0, 0, 0));
-	return (vec3_mul(v, 1 / len));
+	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
+		return ;
+	dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
+	*(unsigned int *)dst = color;
 }

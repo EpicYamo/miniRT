@@ -6,15 +6,15 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/06/01 19:55:33 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/06/29 19:20:13 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
 
-# define WIDTH 1000
-# define HEIGHT 1000
+# define WIDTH 1280
+# define HEIGHT 720
 # define M_PI 3.14159265358979323846
 
 # include <stddef.h>
@@ -196,10 +196,7 @@ t_vec3	vec3_normalize(t_vec3 v);
 t_vec3	vec3_cross(t_vec3 a, t_vec3 b);
 int		check_seperator_count(char *str, size_t count);
 void	print_the_scene(t_scene *scene);
-int		ray_sphere_intersect(t_ray ray, t_sphere_data sphere, double *t_hit);
-void	render_scene(t_data *data);
-t_ray	generate_ray(t_scene *scene, int x, int y);
-void	put_pixel(t_data *data, int x, int y, int color);
-void	render_pixel(t_data *data, int x, int y);
+void	render_scene(t_rt *rt_this);
+void	my_mlx_pixel_put(t_img *img, int x, int y, int color);
 
 #endif

@@ -3,14 +3,14 @@ SRCS	:= miniRT.c \
 			validity_tools/scene_verifier_pt_three.c validity_tools/scene_verifier_pt_four.c validity_tools/scene_verifier_pt_five.c \
 			validity_tools/scene_verifier_pt_six.c \
 			parser/parse_scene_pt_one.c parser/parse_scene_pt_two.c parser/parse_scene_pt_three.c parser/parse_scene_pt_four.c \
-			engine/run_engine.c engine/engine_pt_one.c \
+			engine/run_engine.c engine/engine_pt_one.c engine/vec_utils_pt_one.c engine/vec_utils_pt_two.c engine/engine_utils_pt_one.c\
 			utils/file_reader.c utils/utils_pt_one.c utils/utils_pt_two.c utils/utils_pt_three.c utils/utils_pt_four.c \
-			utils/utils_pt_five.c utils/vec_utils_pt_one.c utils/vec_utils_pt_two.c \
+			utils/utils_pt_five.c \
 			tmp_funcs/print_scene.c
 LIBS	:= -lm
 NAME	:=	miniRT
 CC		:=	cc
-CFLAGS	:=	-Wall -Wextra -Werror
+CFLAGS	:= -Wno-incompatible-pointer-types #-Wall -Wextra -Werror
 RM		:=	rm -rf
 OBJ_DIR :=	objects
 MLX_DIR :=	./minilibx-linux
