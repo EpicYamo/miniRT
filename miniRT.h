@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 17:57:56 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/17 23:28:23 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,22 @@
 # define NAV_RENDER_STEP 8
 # define MOVE_SPEED 40.0
 # define LIGHT_MARKER_DIAMETER 2.0
+# define OBJ_NONE -1
+# define OBJ_SPHERE 0
+# define OBJ_PLANE 1
+# define OBJ_CYLINDER 2
+# define OUTLINE_THICKNESS 2
+# define PLANE_MARKER_RADIUS 15.0
+# define EDIT_NONE 0
+# define EDIT_MOVE 1
+# define EDIT_ROTATE 2
+# define GIZMO_LENGTH 15.0
+# define AXIS_PICK_RADIUS (8.0 + GIZMO_LINE_THICKNESS * 2.0)
+# define GIZMO_LINE_THICKNESS 4
+# define ROTATE_SENSITIVITY 0.01
+# define RING_SEGMENTS 32
+# define UNDO_CAPACITY 50
+# define TEXT_BUFFER_SIZE 32
 
 # include <stddef.h>
 
@@ -160,13 +176,46 @@ typedef struct s_input
 	double	pitch;
 	double	last_time;
 	int		key_shift;
+	int		selected_type;
+	int		selected_index;
+	int		edit_mode;
+	int		dragging_axis;
+	t_vec3	drag_origin;
+	t_vec3	drag_axis_dir;
+	int		drag_last_x;
+	int		drag_last_y;
+	double	drag_start_t;
+	int		key_ctrl;
+	int		left_mouse_held;
+	t_vec3	drag_start_dir;
+	int		text_input_mode;
+	char	text_buffer[TEXT_BUFFER_SIZE];
+	int		text_len;
 }	t_input;
+
+typedef struct s_undo_entry
+{
+	int		obj_type;
+	int		obj_index;
+	int		is_rotation;
+	t_vec3	old_value;
+}	t_undo_entry;
+
+typedef struct s_scene_backup
+{
+	t_sphere_data	*sphere_data;
+	t_plane_data	*plane_data;
+	t_cylinder_data	*cylinder_data;
+}	t_scene_backup;
 
 typedef struct s_rt
 {
-	t_data	*old_data;
-	t_img	img;
-	t_input	input;
+	t_data			*old_data;
+	t_img			img;
+	t_input			input;
+	t_scene_backup	backup;
+	t_undo_entry	undo_stack[UNDO_CAPACITY];
+	int				undo_count;
 }	t_rt;
 
 typedef struct s_hit
@@ -178,7 +227,10 @@ typedef struct s_hit
 	unsigned int	green;
 	unsigned int	blue;
 	int				is_marker;
+	int				obj_type;
+	int				obj_index;
 }	t_hit;
+
 
 char	*read_file(char *file_path);
 int		check_file(char *file_path);
@@ -241,6 +293,7 @@ int		compute_color(t_scene *scene, t_hit *hit);
 int		is_in_shadow(t_scene *scene, t_vec3 point, t_vec3 normal, t_vec3 light_pos);
 int		intersect_plane(t_ray ray, t_plane_data *plane, t_hit *hit);
 int		intersect_cylinder(t_ray ray, t_cylinder_data *cy, t_hit *hit);
+
 int		key_press(int keycode, t_rt *rt);
 int		key_release(int keycode, t_rt *rt);
 void	handle_exit(t_rt *rt_this);
@@ -251,5 +304,34 @@ int		mouse_press(int button, int x, int y, t_rt *rt);
 int		mouse_release(int button, int x, int y, t_rt *rt);
 double	get_time_seconds(void);
 void	update_movement(t_rt *rt);
+int		pick_object(t_scene *scene, int x, int y, int *type, int *index);
+t_ray	generate_ray(t_scene *scene, int x, int y);
+int		project_point(t_scene *scene, t_vec3 point, int *out_x, int *out_y);
+int		color_to_int(unsigned int r, unsigned int g, unsigned int b);
+t_vec3	get_object_center(t_scene *scene, int type, int index);
+void	draw_gizmo(t_rt *rt_this);
+void	draw_line_screen(t_rt *rt_this, int x0, int y0, int x1, int y1, int color);
+void	set_object_center(t_scene *scene, int type, int index, t_vec3 pos);
+int		pick_axis(t_rt *rt, int mx, int my);
+void	update_drag(t_rt *rt);
+t_vec3	rotate_vector(t_vec3 v, t_vec3 axis, double angle);
+t_vec3	get_object_direction(t_scene *scene, int type, int index);
+void	set_object_direction(t_scene *scene, int type, int index, t_vec3 dir);
+void	update_drag_move(t_rt *rt);
+void	update_drag_rotate(t_rt *rt);
+double	compute_axis_t(t_ray ray, t_vec3 origin, t_vec3 axis);
+int		pick_ring_axis(t_rt *rt, int mx, int my);
+
+void	init_scene_backup(t_rt *rt);
+void	free_scene_backup(t_rt *rt);
+void	reset_position(t_rt *rt);
+void	reset_rotation(t_rt *rt);
+void	push_undo(t_rt *rt, int type, int index, int is_rotation,
+			t_vec3 old_value);
+void	undo_last(t_rt *rt);
+t_vec3	get_axis_vector(int axis);
+void	present_frame(t_rt *rt);
+void	draw_text_input(t_rt *rt);
+void	handle_text_input_key(t_rt *rt, int keycode);
 
 #endif

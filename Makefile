@@ -3,9 +3,10 @@ SRCS	:= miniRT.c \
 			validity_tools/scene_verifier_pt_three.c validity_tools/scene_verifier_pt_four.c validity_tools/scene_verifier_pt_five.c \
 			validity_tools/scene_verifier_pt_six.c \
 			parser/parse_scene_pt_one.c parser/parse_scene_pt_two.c parser/parse_scene_pt_three.c parser/parse_scene_pt_four.c \
-			engine/run_engine.c engine/engine_pt_one.c engine/vec_utils_pt_one.c engine/vec_utils_pt_two.c engine/engine_utils_pt_one.c\
+			engine/run_engine.c engine/engine.c engine/vec_utils_pt_one.c engine/vec_utils_pt_two.c \
 			engine/sphere_intersections.c engine/lightning.c engine/plane_intersections.c engine/cylinder_intersections.c \
-			engine/input.c engine/render_loop.c engine/mouse_mov.c \
+			engine/input.c engine/render_loop.c engine/mouse_mov.c engine/gizmo.c engine/backup.c engine/undo.c \
+			engine/text_input.c \
 			utils/file_reader.c utils/utils_pt_one.c utils/utils_pt_two.c utils/utils_pt_three.c utils/utils_pt_four.c \
 			utils/utils_pt_five.c
 LIBS	:= -lm

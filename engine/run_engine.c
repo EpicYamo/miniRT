@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 11:40:19 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 17:29:17 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/17 23:38:51 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,13 @@ void	run_engine(void)
 	t_rt	rt_this;
 
 	init_engine_data(&rt_this);
+	init_camera_state(&rt_this);
+	mlx_set_font(rt_this.old_data->mlx_ptr, rt_this.old_data->mlx_window,
+	"-misc-fixed-bold-r-normal--32-*-*-*-*-*-iso8859-1");
+	init_scene_backup(&rt_this);
 	init_image_data(&rt_this);
 	render_scene(&rt_this, 1);
-	mlx_put_image_to_window(rt_this.old_data->mlx_ptr,
-		rt_this.old_data->mlx_window, rt_this.img.img_ptr, 0, 0);
-	init_camera_state(&rt_this);
+	present_frame(&rt_this);
 	init_mlx_functions(&rt_this);
 }
 
@@ -69,6 +71,7 @@ static void	init_image_data(t_rt *rt_this)
 		mlx_destroy_display((*rt_this).old_data->mlx_ptr);
 		free((*rt_this).old_data->mlx_ptr);
 		free_scene();
+		free_scene_backup(rt_this);
 		free((*rt_this).old_data);
 		error_message(1, "MLX Couldnt Create a New Image");
 	}
@@ -82,6 +85,7 @@ static void	init_image_data(t_rt *rt_this)
 		mlx_destroy_display((*rt_this).old_data->mlx_ptr);
 		free((*rt_this).old_data->mlx_ptr);
 		free_scene();
+		free_scene_backup(rt_this);
 		free((*rt_this).old_data);
 		error_message(1, "MLX Error Creating a Image Addr"); // maybe a better desc ?
 	}
@@ -106,6 +110,7 @@ void	handle_exit(t_rt *rt_this)
 	mlx_destroy_display(rt_this->old_data->mlx_ptr);
 	free(rt_this->old_data->mlx_ptr);
 	free_scene();
+	free_scene_backup(rt_this);
 	free(rt_this->old_data);
 	exit(0);
 }

@@ -6,18 +6,24 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 05:43:39 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 17:23:44 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/17 23:12:56 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 #include "../minilibx-linux/mlx.h"
 #include <math.h>
+#include <string.h>
 
 void	init_camera_state(t_rt *rt)
 {
 	t_vec3	forward;
 
+	memset(&rt->input, 0, sizeof(t_input));
+	rt->input.selected_type = OBJ_NONE;
+	rt->input.dragging_axis = -1;
+	rt->input.selected_index = -1;
+	rt->undo_count = 0;
 	forward = vec3_normalize(vec3_create(
 				rt->old_data->scene->camera_data.vector_x,
 				rt->old_data->scene->camera_data.vector_y,

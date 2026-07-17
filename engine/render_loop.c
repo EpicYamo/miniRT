@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 05:27:14 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 18:01:27 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/17 23:19:34 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,20 @@ int	render_loop(t_rt *rt)
 	{
 		update_mouse_look(rt);
 		update_movement(rt);
+		update_drag(rt);
 		render_scene(rt, rt->input.render_step);
-		mlx_put_image_to_window(rt->old_data->mlx_ptr,
-			rt->old_data->mlx_window, rt->img.img_ptr, 0, 0);
+		present_frame(rt);
 	}
 	return (0);
 }
+
+void	present_frame(t_rt *rt)
+{
+	mlx_put_image_to_window(rt->old_data->mlx_ptr,
+		rt->old_data->mlx_window, rt->img.img_ptr, 0, 0);
+	draw_text_input(rt);
+}
+
 
 double	get_time_seconds(void)
 {
