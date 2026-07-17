@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 19:17:01 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 23:15:02 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 01:03:01 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,13 +163,18 @@ static void	draw_axis(t_rt *rt_this, t_vec3 center, t_vec3 dir, int color)
 void	draw_gizmo(t_rt *rt_this)
 {
 	t_vec3	center;
+	int		index;
 
 	if (rt_this->input.selected_type == OBJ_NONE)
 		return ;
 	if (rt_this->input.edit_mode == EDIT_NONE)
 		return ;
+	index = find_index_by_id(rt_this->old_data->scene,
+			rt_this->input.selected_type, rt_this->input.selected_id);
+	if (index == -1)
+		return ;
 	center = get_object_center(rt_this->old_data->scene,
-			rt_this->input.selected_type, rt_this->input.selected_index);
+			rt_this->input.selected_type, index);
 	if (rt_this->input.edit_mode == EDIT_MOVE)
 	{
 		draw_axis(rt_this, center, vec3_create(1.0, 0.0, 0.0),
@@ -283,9 +288,14 @@ int	pick_ring_axis(t_rt *rt, int mx, int my)
 	int		prev_y;
 	int		has_prev;
 	double	dist;
+	int		index;
 
+	index = find_index_by_id(rt->old_data->scene, rt->input.selected_type,
+			rt->input.selected_id);
+	if (index == -1)
+		return (-1);
 	center = get_object_center(rt->old_data->scene,
-			rt->input.selected_type, rt->input.selected_index);
+			rt->input.selected_type, index);
 	best_dist = AXIS_PICK_RADIUS;
 	best_axis = -1;
 	axis = 0;
@@ -339,9 +349,14 @@ int	pick_axis(t_rt *rt, int mx, int my)
 	int		best_axis;
 	double	dist;
 	int		i;
+	int		index;
 
+	index = find_index_by_id(rt->old_data->scene, rt->input.selected_type,
+			rt->input.selected_id);
+	if (index == -1)
+		return (-1);
 	center = get_object_center(rt->old_data->scene,
-			rt->input.selected_type, rt->input.selected_index);
+			rt->input.selected_type, index);
 	dirs[0] = vec3_create(1.0, 0.0, 0.0);
 	dirs[1] = vec3_create(0.0, 1.0, 0.0);
 	dirs[2] = vec3_create(0.0, 0.0, 1.0);
@@ -393,7 +408,12 @@ void	update_drag_move(t_rt *rt)
 	double	t;
 	double	delta;
 	t_vec3	new_point;
+	int		index;
 
+	index = find_index_by_id(rt->old_data->scene, rt->input.selected_type,
+			rt->input.selected_id);
+	if (index == -1)
+		return ;
 	mlx_mouse_get_pos(rt->old_data->mlx_ptr, rt->old_data->mlx_window,
 		&mx, &my);
 	ray = generate_ray(rt->old_data->scene, mx, my);
@@ -402,7 +422,7 @@ void	update_drag_move(t_rt *rt)
 	new_point = vec3_add(rt->input.drag_origin,
 			vec3_mul(rt->input.drag_axis_dir, delta));
 	set_object_center(rt->old_data->scene, rt->input.selected_type,
-		rt->input.selected_index, new_point);
+		index, new_point);
 }
 
 void	update_drag_rotate(t_rt *rt)
@@ -413,7 +433,12 @@ void	update_drag_rotate(t_rt *rt)
 	double	angle;
 	t_vec3	axis;
 	t_vec3	dir;
+	int		index;
 
+	index = find_index_by_id(rt->old_data->scene, rt->input.selected_type,
+			rt->input.selected_id);
+	if (index == -1)
+		return ;
 	mlx_mouse_get_pos(rt->old_data->mlx_ptr, rt->old_data->mlx_window,
 		&mx, &my);
 	delta_x = mx - rt->input.drag_last_x;
@@ -429,10 +454,10 @@ void	update_drag_rotate(t_rt *rt)
 	else
 		axis = vec3_create(0.0, 0.0, 1.0);
 	dir = get_object_direction(rt->old_data->scene, rt->input.selected_type,
-			rt->input.selected_index);
+			index);
 	dir = vec3_normalize(rotate_vector(dir, axis, angle));
 	set_object_direction(rt->old_data->scene, rt->input.selected_type,
-		rt->input.selected_index, dir);
+		index, dir);
 }
 
 void	update_drag(t_rt *rt)

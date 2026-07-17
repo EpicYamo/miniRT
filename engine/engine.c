@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   engine_pt_one.c                                    :+:      :+:    :+:   */
+/*   engine.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 16:42:20 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 23:05:33 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 01:01:54 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,14 @@ static int	test_plane_marker(t_ray ray, t_plane_data *plane)
 	return (1);
 }
 
-static int	test_selected_hit(t_scene *scene, t_ray ray, int type, int index)
+static int	test_selected_hit(t_scene *scene, t_ray ray, int type, int id)
 {
 	t_hit	hit;
+	int		index;
 
+	index = find_index_by_id(scene, type, id);
+	if (index == -1)
+		return (0);
 	if (type == OBJ_SPHERE)
 		return (intersect_sphere(ray, &scene->sphere_data[index], &hit));
 	if (type == OBJ_CYLINDER)
@@ -133,7 +137,7 @@ void	render_scene(t_rt *rt_this, int step)
 			if (rt_this->input.selected_type != OBJ_NONE)
 				sel_hit = test_selected_hit(rt_this->old_data->scene, ray,
 						rt_this->input.selected_type,
-						rt_this->input.selected_index);
+						rt_this->input.selected_id);
 			by = 0;
 			while (by < step && (y + by) < HEIGHT)
 			{
@@ -277,7 +281,7 @@ int	color_to_int(unsigned int r, unsigned int g, unsigned int b)
 }
 
 
-int	pick_object(t_scene *scene, int x, int y, int *type, int *index)
+int	pick_object(t_scene *scene, int x, int y, int *type, int *id)
 {
 	t_ray	ray;
 	t_hit	hit;
@@ -286,7 +290,12 @@ int	pick_object(t_scene *scene, int x, int y, int *type, int *index)
 	if (find_closest_hit(scene, ray, &hit) && hit.obj_type != OBJ_NONE)
 	{
 		*type = hit.obj_type;
-		*index = hit.obj_index;
+		if (hit.obj_type == OBJ_SPHERE)
+			*id = scene->sphere_data[hit.obj_index].id;
+		else if (hit.obj_type == OBJ_PLANE)
+			*id = scene->plane_data[hit.obj_index].id;
+		else
+			*id = scene->cylinder_data[hit.obj_index].id;
 		return (1);
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 05:16:05 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 23:27:26 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 01:07:51 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,18 @@ int	key_press(int keycode, t_rt *rt)
 			present_frame(rt);
 		}
 	}
+	else if (keycode == '1')
+		spawn_sphere(rt);
+	else if (keycode == '2')
+		spawn_plane(rt);
+	else if (keycode == '3')
+		spawn_cylinder(rt);
+	else if (keycode == 65535)
+		delete_selected(rt);
 	else if (keycode == 'c')
 	{
 		rt->input.selected_type = OBJ_NONE;
-		rt->input.selected_index = -1;
+		rt->input.selected_id = -1;
 		rt->input.edit_mode = EDIT_NONE;
 		rt->input.dragging_axis = -1;
 		if (rt->input.mode == MODE_RENDER)
@@ -166,10 +174,11 @@ int	key_release(int keycode, t_rt *rt)
 int	mouse_press(int button, int x, int y, t_rt *rt)
 {
 	int		obj_type;
-	int		obj_index;
+	int		obj_id;
 	int		mx;
 	int		my;
 	int		axis;
+	int		sel_index;
 	t_ray	ray;
 
 	(void)x;
@@ -192,14 +201,18 @@ int	mouse_press(int button, int x, int y, t_rt *rt)
 			else if (rt->input.edit_mode == EDIT_ROTATE)
 				axis = pick_ring_axis(rt, mx, my);
 		}
+		sel_index = -1;
 		if (axis != -1)
+			sel_index = find_index_by_id(rt->old_data->scene,
+					rt->input.selected_type, rt->input.selected_id);
+		if (axis != -1 && sel_index != -1)
 		{
 			rt->input.left_mouse_held = 1;
 			rt->input.dragging_axis = axis;
 			if (rt->input.edit_mode == EDIT_MOVE)
 			{
 				rt->input.drag_origin = get_object_center(rt->old_data->scene,
-						rt->input.selected_type, rt->input.selected_index);
+						rt->input.selected_type, sel_index);
 				if (axis == 0)
 					rt->input.drag_axis_dir = vec3_create(1.0, 0.0, 0.0);
 				else if (axis == 1)
@@ -214,22 +227,23 @@ int	mouse_press(int button, int x, int y, t_rt *rt)
 			{
 				rt->input.drag_last_x = mx;
 				rt->input.drag_last_y = my;
-				rt->input.drag_start_dir = get_object_direction(rt->old_data->scene,
-					rt->input.selected_type, rt->input.selected_index);
+				rt->input.drag_start_dir = get_object_direction(
+						rt->old_data->scene, rt->input.selected_type,
+						sel_index);
 			}
 		}
 		else
 		{
 			if (pick_object(rt->old_data->scene, mx, my,
-					&obj_type, &obj_index))
+					&obj_type, &obj_id))
 			{
 				rt->input.selected_type = obj_type;
-				rt->input.selected_index = obj_index;
+				rt->input.selected_id = obj_id;
 			}
 			else
 			{
 				rt->input.selected_type = OBJ_NONE;
-				rt->input.selected_index = -1;
+				rt->input.selected_id = -1;
 			}
 			rt->input.dragging_axis = -1;
 			rt->input.edit_mode = EDIT_NONE;
@@ -253,10 +267,10 @@ int	mouse_release(int button, int x, int y, t_rt *rt)
 		{
 			if (rt->input.edit_mode == EDIT_MOVE)
 				push_undo(rt, rt->input.selected_type,
-					rt->input.selected_index, 0, rt->input.drag_origin);
+					rt->input.selected_id, 0, rt->input.drag_origin);
 			else if (rt->input.edit_mode == EDIT_ROTATE)
 				push_undo(rt, rt->input.selected_type,
-					rt->input.selected_index, 1, rt->input.drag_start_dir);
+					rt->input.selected_id, 1, rt->input.drag_start_dir);
 		}
 	}
 	return (0);

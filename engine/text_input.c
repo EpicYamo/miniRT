@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 23:16:29 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 23:17:23 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 00:22:59 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ static void	confirm_text_input(t_rt *rt)
 	value = ft_atod(rt->input.text_buffer);
 	axis_dir = get_axis_vector(rt->input.dragging_axis);
 	type = rt->input.selected_type;
-	index = rt->input.selected_index;
+	index = find_index_by_id(rt->old_data->scene, rt->input.selected_type,
+			rt->input.selected_id);
+	if (index == -1)
+		return ;
 	if (rt->input.edit_mode == EDIT_MOVE)
 	{
 		current = get_object_center(rt->old_data->scene, type, index);

@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 23:28:23 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 01:07:04 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,10 @@
 # define RING_SEGMENTS 32
 # define UNDO_CAPACITY 50
 # define TEXT_BUFFER_SIZE 32
+# define UNDO_MOVE 0
+# define UNDO_ROTATE 1
+# define UNDO_DELETE 2
+# define UNDO_SPAWN 3
 
 # include <stddef.h>
 
@@ -89,6 +93,7 @@ typedef struct s_sphere_data
 	unsigned int	red;
 	unsigned int	green;
 	unsigned int	blue;
+	int				id;
 }	t_sphere_data;
 
 typedef struct s_plane_data
@@ -102,6 +107,7 @@ typedef struct s_plane_data
 	unsigned int	red;
 	unsigned int	green;
 	unsigned int	blue;
+	int				id;
 }	t_plane_data;
 
 typedef struct s_cylinder_data
@@ -117,6 +123,7 @@ typedef struct s_cylinder_data
 	unsigned int	red;
 	unsigned int	green;
 	unsigned int	blue;
+	int				id;
 }	t_cylinder_data;
 
 typedef struct s_scene
@@ -177,7 +184,6 @@ typedef struct s_input
 	double	last_time;
 	int		key_shift;
 	int		selected_type;
-	int		selected_index;
 	int		edit_mode;
 	int		dragging_axis;
 	t_vec3	drag_origin;
@@ -191,14 +197,21 @@ typedef struct s_input
 	int		text_input_mode;
 	char	text_buffer[TEXT_BUFFER_SIZE];
 	int		text_len;
+	int		selected_id;
+	int		next_sphere_id;
+	int		next_plane_id;
+	int		next_cylinder_id;
 }	t_input;
 
 typedef struct s_undo_entry
 {
-	int		obj_type;
-	int		obj_index;
-	int		is_rotation;
-	t_vec3	old_value;
+	int				action;
+	int				obj_type;
+	int				obj_id;
+	t_vec3			old_value;
+	t_sphere_data	del_sphere;
+	t_plane_data	del_plane;
+	t_cylinder_data	del_cylinder;
 }	t_undo_entry;
 
 typedef struct s_scene_backup
@@ -206,6 +219,9 @@ typedef struct s_scene_backup
 	t_sphere_data	*sphere_data;
 	t_plane_data	*plane_data;
 	t_cylinder_data	*cylinder_data;
+	int				sphere_count;
+	int				plane_count;
+	int				cylinder_count;
 }	t_scene_backup;
 
 typedef struct s_rt
@@ -333,5 +349,14 @@ t_vec3	get_axis_vector(int axis);
 void	present_frame(t_rt *rt);
 void	draw_text_input(t_rt *rt);
 void	handle_text_input_key(t_rt *rt, int keycode);
+
+void	assign_object_ids(t_rt *rt);
+int		find_index_by_id(t_scene *scene, int type, int id);
+void	spawn_sphere(t_rt *rt);
+void	spawn_plane(t_rt *rt);
+void	spawn_cylinder(t_rt *rt);
+void	delete_selected(t_rt *rt);
+void	shift_undo_stack(t_rt *rt);
+void	shift_remove(t_scene *scene, int type, int index);
 
 #endif

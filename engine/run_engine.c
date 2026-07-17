@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 11:40:19 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/17 23:38:51 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 00:08:38 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	run_engine(void)
 	mlx_set_font(rt_this.old_data->mlx_ptr, rt_this.old_data->mlx_window,
 	"-misc-fixed-bold-r-normal--32-*-*-*-*-*-iso8859-1");
 	init_scene_backup(&rt_this);
+	assign_object_ids(&rt_this);
 	init_image_data(&rt_this);
 	render_scene(&rt_this, 1);
 	present_frame(&rt_this);
