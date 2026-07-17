@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/07 20:08:18 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/17 17:57:56 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@
 # define HEIGHT 1440
 # define M_PI 3.14159265358979323846
 # define EPSILON 1e-4
+# define MOUSE_SENSITIVITY 0.0015
+# define PITCH_LIMIT (89.0 * M_PI / 180.0)
+# define MODE_RENDER 0
+# define MODE_NAVIGATE 1
+# define NAV_RENDER_STEP 8
+# define MOVE_SPEED 40.0
+# define LIGHT_MARKER_DIAMETER 2.0
 
 # include <stddef.h>
 
@@ -136,10 +143,30 @@ typedef struct s_img
     int		endian;
 }	t_img;
 
+typedef struct s_input
+{
+	int		key_w;
+	int		key_a;
+	int		key_s;
+	int		key_d;
+	int		key_q;
+	int		key_e;
+	int		mode;
+	int		render_step;
+	int		right_mouse_held;
+	int		last_mouse_x;
+	int		last_mouse_y;
+	double	yaw; 
+	double	pitch;
+	double	last_time;
+	int		key_shift;
+}	t_input;
+
 typedef struct s_rt
 {
 	t_data	*old_data;
 	t_img	img;
+	t_input	input;
 }	t_rt;
 
 typedef struct s_hit
@@ -150,6 +177,7 @@ typedef struct s_hit
 	unsigned int	red;
 	unsigned int	green;
 	unsigned int	blue;
+	int				is_marker;
 }	t_hit;
 
 char	*read_file(char *file_path);
@@ -206,12 +234,22 @@ double	vec3_length(t_vec3 v);
 t_vec3	vec3_normalize(t_vec3 v);
 t_vec3	vec3_cross(t_vec3 a, t_vec3 b);
 int		check_seperator_count(char *str, size_t count);
-void	render_scene(t_rt *rt_this);
+void	render_scene(t_rt *rt_this, int step);
 void	my_mlx_pixel_put(t_img *img, int x, int y, int color);
 int		intersect_sphere(t_ray ray, t_sphere_data *sphere, t_hit *hit);
 int		compute_color(t_scene *scene, t_hit *hit);
 int		is_in_shadow(t_scene *scene, t_vec3 point, t_vec3 normal, t_vec3 light_pos);
 int		intersect_plane(t_ray ray, t_plane_data *plane, t_hit *hit);
 int		intersect_cylinder(t_ray ray, t_cylinder_data *cy, t_hit *hit);
+int		key_press(int keycode, t_rt *rt);
+int		key_release(int keycode, t_rt *rt);
+void	handle_exit(t_rt *rt_this);
+int		render_loop(t_rt *rt_this);
+void	init_camera_state(t_rt *rt);
+void	update_mouse_look(t_rt *rt);
+int		mouse_press(int button, int x, int y, t_rt *rt);
+int		mouse_release(int button, int x, int y, t_rt *rt);
+double	get_time_seconds(void);
+void	update_movement(t_rt *rt);
 
 #endif

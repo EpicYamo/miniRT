@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 11:40:19 by aaycan            #+#    #+#             */
-/*   Updated: 2026/06/29 18:49:28 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/17 17:29:17 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 static void	init_engine_data(t_rt *rt_data);
 static void	init_image_data(t_rt *rt_this);
 static void	init_mlx_functions(t_rt *rt_this);
-static int	exit_button(t_rt *rt_this);
-static int	exit_esc(int key, t_rt *rt_this);
 
 void	run_engine(void)
 {
@@ -26,9 +24,10 @@ void	run_engine(void)
 
 	init_engine_data(&rt_this);
 	init_image_data(&rt_this);
-	render_scene(&rt_this);
+	render_scene(&rt_this, 1);
 	mlx_put_image_to_window(rt_this.old_data->mlx_ptr,
 		rt_this.old_data->mlx_window, rt_this.img.img_ptr, 0, 0);
+	init_camera_state(&rt_this);
 	init_mlx_functions(&rt_this);
 }
 
@@ -90,36 +89,23 @@ static void	init_image_data(t_rt *rt_this)
 
 static void	init_mlx_functions(t_rt *rt_this)
 {
-	mlx_hook((*rt_this).old_data->mlx_window, 17, 0, exit_button, rt_this);
-	mlx_hook((*rt_this).old_data->mlx_window, 2, 1, exit_esc, rt_this);
+	mlx_hook((*rt_this).old_data->mlx_window, 17, 0, handle_exit, rt_this);
+	mlx_hook((*rt_this).old_data->mlx_window, 2, 1, key_press, rt_this);
+	mlx_hook((*rt_this).old_data->mlx_window, 3, 1L << 1, key_release, rt_this);
+	mlx_hook((*rt_this).old_data->mlx_window, 4, 1L << 2, mouse_press, rt_this);
+	mlx_hook((*rt_this).old_data->mlx_window, 5, 1L << 3, mouse_release, rt_this);
+	mlx_loop_hook((*rt_this).old_data->mlx_ptr, render_loop, rt_this);
 	mlx_loop((*rt_this).old_data->mlx_ptr);
 }
 
-static int	exit_button(t_rt *rt_this)
+
+void	handle_exit(t_rt *rt_this)
 {
 	mlx_destroy_image(rt_this->old_data->mlx_ptr, rt_this->img.img_ptr);
-	mlx_destroy_window((*rt_this).old_data->mlx_ptr,
-		(*rt_this).old_data->mlx_window);
-	mlx_destroy_display((*rt_this).old_data->mlx_ptr);
-	free((*rt_this).old_data->mlx_ptr);
+	mlx_destroy_window(rt_this->old_data->mlx_ptr, rt_this->old_data->mlx_window);
+	mlx_destroy_display(rt_this->old_data->mlx_ptr);
+	free(rt_this->old_data->mlx_ptr);
 	free_scene();
-	free((*rt_this).old_data);
+	free(rt_this->old_data);
 	exit(0);
-}
-
-static int	exit_esc(int key, t_rt *rt_this)
-{
-	if (key == 65307)
-	{
-		mlx_destroy_image(rt_this->old_data->mlx_ptr, rt_this->img.img_ptr);
-		mlx_destroy_window((*rt_this).old_data->mlx_ptr,
-			(*rt_this).old_data->mlx_window);
-		mlx_destroy_display((*rt_this).old_data->mlx_ptr);
-		free((*rt_this).old_data->mlx_ptr);
-		free_scene();
-		free((*rt_this).old_data);
-		exit(0);
-	}
-	else
-		return (0);
 }
