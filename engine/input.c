@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 05:16:05 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:27:44 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 01:07:51 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,10 @@ int	key_press(int keycode, t_rt *rt)
 			&& rt->input.active_property != PROP_NONE)
 		{
 			rt->input.text_input_mode = 1;
-			rt->input.text_target = TEXT_TARGET_PROPERTY;
+			if (rt->input.active_property == PROP_TEXTURE)
+				rt->input.text_target = TEXT_TARGET_TEXTURE_NAME;
+			else
+				rt->input.text_target = TEXT_TARGET_PROPERTY;
 			rt->input.text_len = 0;
 			rt->input.text_buffer[0] = '\0';
 		}
@@ -127,6 +130,10 @@ int	key_press(int keycode, t_rt *rt)
 		spawn_light(rt);
 	else if (keycode == '5' && rt->input.selected_type == OBJ_NONE)
 		spawn_cube(rt);
+	else if (keycode == '6' && rt->input.selected_type == OBJ_NONE)
+		spawn_triangle(rt, TRIANGLE_RIGHT);
+	else if (keycode == '7' && rt->input.selected_type == OBJ_NONE)
+		spawn_triangle(rt, TRIANGLE_EQUILATERAL);
 	else if (keycode == 'y')
 	{
 		cycle_selected_light(rt);
@@ -170,7 +177,8 @@ int	key_press(int keycode, t_rt *rt)
 	{
 		if (rt->input.selected_type == OBJ_PLANE
 			|| rt->input.selected_type == OBJ_CYLINDER
-			|| rt->input.selected_type == OBJ_CUBE)
+			|| rt->input.selected_type == OBJ_CUBE
+			|| rt->input.selected_type == OBJ_TRIANGLE)
 		{
 			if (rt->input.edit_mode == EDIT_ROTATE)
 				rt->input.edit_mode = EDIT_NONE;

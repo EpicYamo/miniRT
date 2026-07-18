@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 16:37:44 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:26:27 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/16 21:12:31 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,42 @@ void	validate_cube_data(char **scene)
 			check_normalized_vector(scene, &scene[i][j]);
 			skip_to_next_parameter(scene, &i, &j);
 			check_diameter_height(scene, &scene[i][j]);
+			skip_to_next_parameter(scene, &i, &j);
+			check_colors_range(scene, &scene[i][j]);
+		}
+	}
+}
+
+static void	check_kind(char **scene, char *value)
+{
+	if (value[0] != '0' && value[0] != '1')
+		free_arr_error_message(scene);
+	if (value[1] != ' ')
+		free_arr_error_message(scene);
+}
+
+void	validate_triangle_data(char **scene)
+{
+	size_t	i;
+	size_t	j;
+
+	i = -1;
+	while (scene[++i])
+	{
+		if (scene[i][0] == 't' && scene[i][1] == 'r')
+		{
+			j = 2;
+			while (scene[i][j] == ' ')
+				j++;
+			check_coordinates(scene, &scene[i][j]);
+			skip_to_next_parameter(scene, &i, &j);
+			check_normalized_vector(scene, &scene[i][j]);
+			skip_to_next_parameter(scene, &i, &j);
+			check_diameter_height(scene, &scene[i][j]);
+			skip_to_next_parameter(scene, &i, &j);
+			check_diameter_height(scene, &scene[i][j]);
+			skip_to_next_parameter(scene, &i, &j);
+			check_kind(scene, &scene[i][j]);
 			skip_to_next_parameter(scene, &i, &j);
 			check_colors_range(scene, &scene[i][j]);
 		}

@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 23:36:50 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:26:15 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/16 21:05:46 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	check_scene(char *file_path)
 	validate_plane_data(scene);
 	validate_cylinder_data(scene);
 	validate_cube_data(scene);
+	validate_triangle_data(scene);
 	free_two_dim_array(scene);
 }
 
@@ -53,7 +54,8 @@ static void	validate_identifier_names(char **scene)
 			&& (ft_strncmp(scene[i], "sp ", 3) != 0)
 			&& (ft_strncmp(scene[i], "pl ", 3) != 0)
 			&& (ft_strncmp(scene[i], "cy ", 3) != 0)
-			&& (ft_strncmp(scene[i], "cu ", 3) != 0))
+			&& (ft_strncmp(scene[i], "cu ", 3) != 0)
+			&& (ft_strncmp(scene[i], "tr ", 3) != 0))
 			free_arr_error_message(scene);
 	}
 }

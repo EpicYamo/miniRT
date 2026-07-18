@@ -18,6 +18,7 @@ static void	allocate_plane_space(t_scene *scene);
 static void	allocate_cylinder_space(t_scene *scene);
 static void	allocate_light_space(t_scene *scene);
 static void	allocate_cube_space(t_scene *scene);
+static void	allocate_triangle_space(t_scene *scene);
 
 void	create_parameter_count(t_scene *scene, char **scene_map)
 {
@@ -34,6 +35,8 @@ void	create_parameter_count(t_scene *scene, char **scene_map)
 			scene->element_counts.cylinder_count += 1;
 		else if (scene_map[i][0] == 'c' && scene_map[i][1] == 'u')
 			scene->element_counts.cube_count += 1;
+		else if (scene_map[i][0] == 't' && scene_map[i][1] == 'r')
+			scene->element_counts.triangle_count += 1;
 		else if (scene_map[i][0] == 'L')
 			scene->element_counts.light_count += 1;
 	}
@@ -47,6 +50,24 @@ void	create_parameter_count(t_scene *scene, char **scene_map)
 		allocate_light_space(scene);
 	if (scene->element_counts.cube_count > 0)
 		allocate_cube_space(scene);
+	if (scene->element_counts.triangle_count > 0)
+		allocate_triangle_space(scene);
+}
+
+static void	allocate_triangle_space(t_scene *scene)
+{
+	scene->triangle_data = malloc(sizeof(t_triangle_data)
+			* scene->element_counts.triangle_count);
+	if (!(scene->triangle_data))
+	{
+		free(scene->sphere_data);
+		free(scene->plane_data);
+		free(scene->cylinder_data);
+		free(scene->light_data);
+		free(scene->cube_data);
+		free(scene);
+		error_message(1, "allocation failed");
+	}
 }
 
 static void	allocate_cube_space(t_scene *scene)
@@ -143,7 +164,9 @@ void	create_sphere_data(t_scene *scene, char **scene_map)
 			scene->sphere_data[index].shininess = DEFAULT_SHININESS;
 			scene->sphere_data[index].specular_strength
 				= DEFAULT_SPEC_STRENGTH;
-			scene->sphere_data[index].has_texture = 0;
+			scene->sphere_data[index].texture_id = -1;
+			scene->sphere_data[index].tex_repeat = 1.0;
+			scene->sphere_data[index].bump_strength = 0.0;
 		}
 	}
 }

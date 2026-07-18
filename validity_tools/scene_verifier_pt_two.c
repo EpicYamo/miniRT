@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 21:32:09 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:26:09 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/13 03:10:15 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ void	check_param_count(char **scene, char *params, int params_c)
 	else if (params_c == 6)
 	{
 		if (!ft_strncmp(params, "cy", 2))
+			fail = 0;
+	}
+	else if (params_c == 7)
+	{
+		if (!ft_strncmp(params, "tr", 2))
 			fail = 0;
 	}
 	if (fail != 0)

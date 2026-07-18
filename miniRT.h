@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 04:19:00 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 01:07:04 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@
 # define OBJ_CYLINDER 2
 # define OBJ_LIGHT 3
 # define OBJ_CUBE 4
+# define OBJ_TRIANGLE 5
+# define TRIANGLE_RIGHT 0
+# define TRIANGLE_EQUILATERAL 1
+# define TRIANGLE_SPAWN_SIZE 15.0
 # define NAV_LIGHT_LIMIT 2
 # define LIGHT_SPAWN_DIAMETER 2.0
 # define LIGHT_SPAWN_BRIGHTNESS 0.6
@@ -45,7 +49,7 @@
 # define ROTATE_SENSITIVITY 0.01
 # define RING_SEGMENTS 32
 # define UNDO_CAPACITY 50
-# define TEXT_BUFFER_SIZE 32
+# define TEXT_BUFFER_SIZE 48
 # define UNDO_MOVE 0
 # define UNDO_ROTATE 1
 # define UNDO_DELETE 2
@@ -61,13 +65,20 @@
 # define PROP_SHININESS 6
 # define PROP_SPEC_STRENGTH 7
 # define PROP_TEXTURE 8
+# define PROP_TEX_REPEAT 9
+# define PROP_BUMP 10
+# define PROP_KIND 11
+# define PROP_BRIGHTNESS 12
+# define TRIANGLE_SPAWN_DEPTH 10.0
 # define CHECKER_CELL_SIZE 10.0
 # define DEFAULT_SHININESS 32.0
 # define DEFAULT_SPEC_STRENGTH 0.6
-# define TEXTURE_PATH "textures/sphere_texture.xpm"
+# define TEXTURE_DIR "textures/"
+# define TEXTURE_UNIT_SIZE 20.0
 # define AA_SAMPLES 2
 # define TEXT_TARGET_AXIS 0
 # define TEXT_TARGET_PROPERTY 1
+# define TEXT_TARGET_TEXTURE_NAME 2
 
 # include <stddef.h>
 
@@ -78,6 +89,7 @@ typedef struct s_scene_element_count
 	size_t	cylinder_count;
 	size_t	light_count;
 	size_t	cube_count;
+	size_t	triangle_count;
 }	t_element_count;
 
 typedef struct s_ambient_data
@@ -100,6 +112,18 @@ typedef struct s_camera_data
 	double	vector_z;
 	int		fov;
 }	t_camera_data;
+
+typedef struct s_texture
+{
+	char	name[64];
+	void	*img;
+	char	*addr;
+	int		width;
+	int		height;
+	int		bpp;
+	int		line;
+	int		endian;
+}	t_texture;
 
 typedef struct s_light_data
 {
@@ -127,7 +151,9 @@ typedef struct s_sphere_data
 	int				checker;
 	double			shininess;
 	double			specular_strength;
-	int				has_texture;
+	int				texture_id;
+	double			tex_repeat;
+	double			bump_strength;
 }	t_sphere_data;
 
 typedef struct s_plane_data
@@ -145,6 +171,9 @@ typedef struct s_plane_data
 	int				checker;
 	double			shininess;
 	double			specular_strength;
+	int				texture_id;
+	double			tex_repeat;
+	double			bump_strength;
 }	t_plane_data;
 
 typedef struct s_cylinder_data
@@ -164,6 +193,9 @@ typedef struct s_cylinder_data
 	int				checker;
 	double			shininess;
 	double			specular_strength;
+	int				texture_id;
+	double			tex_repeat;
+	double			bump_strength;
 }	t_cylinder_data;
 
 typedef struct s_cube_data
@@ -182,7 +214,33 @@ typedef struct s_cube_data
 	int				checker;
 	double			shininess;
 	double			specular_strength;
+	int				texture_id;
+	double			tex_repeat;
+	double			bump_strength;
 }	t_cube_data;
+
+typedef struct s_triangle_data
+{
+	double			pos_x;
+	double			pos_y;
+	double			pos_z;
+	double			vector_x;
+	double			vector_y;
+	double			vector_z;
+	double			size;
+	double			depth;
+	int				kind;
+	unsigned int	red;
+	unsigned int	green;
+	unsigned int	blue;
+	int				id;
+	int				checker;
+	double			shininess;
+	double			specular_strength;
+	int				texture_id;
+	double			tex_repeat;
+	double			bump_strength;
+}	t_triangle_data;
 
 typedef struct s_scene
 {
@@ -194,14 +252,9 @@ typedef struct s_scene
 	t_plane_data	*plane_data;
 	t_cylinder_data	*cylinder_data;
 	t_cube_data		*cube_data;
-	void			*tex_img;
-	char			*tex_addr;
-	int				tex_width;
-	int				tex_height;
-	int				tex_bpp;
-	int				tex_line;
-	int				tex_endian;
-	int				tex_loaded;
+	t_triangle_data	*triangle_data;
+	t_texture		*textures;
+	int				texture_count;
 }	t_scene;
 
 typedef struct s_data
@@ -270,6 +323,7 @@ typedef struct s_input
 	int		next_cylinder_id;
 	int		next_light_id;
 	int		next_cube_id;
+	int		next_triangle_id;
 	int		active_property;
 	int		text_target;
 }	t_input;
@@ -285,6 +339,7 @@ typedef struct s_undo_entry
 	t_cylinder_data	del_cylinder;
 	t_light_data	del_light;
 	t_cube_data		del_cube;
+	t_triangle_data	del_triangle;
 	int				field;
 	double			old_scalar;
 }	t_undo_entry;
@@ -296,11 +351,13 @@ typedef struct s_scene_backup
 	t_cylinder_data	*cylinder_data;
 	t_light_data	*light_data;
 	t_cube_data		*cube_data;
+	t_triangle_data	*triangle_data;
 	int				sphere_count;
 	int				plane_count;
 	int				cylinder_count;
 	int				light_count;
 	int				cube_count;
+	int				triangle_count;
 }	t_scene_backup;
 
 typedef struct s_rt
@@ -327,7 +384,10 @@ typedef struct s_hit
 	int				checker;
 	double			shininess;
 	double			specular_strength;
-	int				has_texture;
+	int				texture_id;
+	double			u;
+	double			v;
+	double			bump_strength;
 	int				side_hit;
 	double			local_h;
 }	t_hit;
@@ -350,6 +410,7 @@ void	check_diameter_height(char **scene, char *value);
 void	validate_plane_data(char **scene);
 void	validate_cylinder_data(char **scene);
 void	validate_cube_data(char **scene);
+void	validate_triangle_data(char **scene);
 void	skip_to_next_parameter(char **scene, size_t *i, size_t *j);
 t_scene	*parse_scene(char *file_path);
 void	fill_colors(unsigned int *red, unsigned int *green,
@@ -366,6 +427,7 @@ void	create_sphere_data(t_scene *scene, char **scene_map);
 void	create_plane_data(t_scene *scene, char **scene_map);
 void	create_cylinder_data(t_scene *scene, char **scene_map);
 void	create_cube_data(t_scene *scene, char **scene_map);
+void	create_triangle_data(t_scene *scene, char **scene_map);
 void	run_engine(void);
 
 size_t	ft_strlen(const char *s);
@@ -398,7 +460,8 @@ int		is_in_shadow(t_scene *scene, t_vec3 point, t_vec3 normal, t_vec3 light_pos)
 int		intersect_plane(t_ray ray, t_plane_data *plane, t_hit *hit);
 int		intersect_cylinder(t_ray ray, t_cylinder_data *cy, t_hit *hit);
 int		intersect_cube(t_ray ray, t_cube_data *cube, t_hit *hit);
-void	init_texture(t_rt *rt);
+int		intersect_triangle(t_ray ray, t_triangle_data *tri, t_hit *hit);
+int		get_or_load_texture(t_rt *rt, char *name);
 
 int		key_press(int keycode, t_rt *rt);
 int		key_release(int keycode, t_rt *rt);
@@ -448,6 +511,7 @@ void	spawn_plane(t_rt *rt);
 void	spawn_cylinder(t_rt *rt);
 void	spawn_light(t_rt *rt);
 void	spawn_cube(t_rt *rt);
+void	spawn_triangle(t_rt *rt, int kind);
 void	cycle_selected_light(t_rt *rt);
 void	delete_selected(t_rt *rt);
 void	shift_undo_stack(t_rt *rt);

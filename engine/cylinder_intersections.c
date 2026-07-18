@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 19:25:54 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 04:19:26 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/07 19:48:54 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,38 @@ static void	apply_side_checker(t_hit *hit, t_vec3 center, t_vec3 axis,
 	}
 }
 
+static void	compute_side_uv(t_hit *hit, t_vec3 center, t_vec3 axis,
+			double radius, double h, double repeat)
+{
+	t_vec3	right;
+	t_vec3	forward;
+	t_vec3	rel;
+	t_vec3	perp;
+	double	theta;
+	double	arc;
+
+	build_tangent_basis(axis, &right, &forward);
+	rel = vec3_sub(hit->point, center);
+	perp = vec3_sub(rel, vec3_mul(axis, h));
+	theta = atan2(vec3_dot(perp, forward), vec3_dot(perp, right));
+	arc = theta * radius;
+	hit->u = (arc / TEXTURE_UNIT_SIZE) * repeat;
+	hit->v = (h / TEXTURE_UNIT_SIZE) * repeat;
+}
+
+static void	compute_flat_uv(t_hit *hit, t_vec3 origin, t_vec3 normal,
+			double repeat)
+{
+	t_vec3	right;
+	t_vec3	forward;
+	t_vec3	rel;
+
+	build_tangent_basis(normal, &right, &forward);
+	rel = vec3_sub(hit->point, origin);
+	hit->u = (vec3_dot(rel, right) / TEXTURE_UNIT_SIZE) * repeat;
+	hit->v = (vec3_dot(rel, forward) / TEXTURE_UNIT_SIZE) * repeat;
+}
+
 int	intersect_cylinder(t_ray ray, t_cylinder_data *cy, t_hit *hit)
 {
 	t_vec3	center;
@@ -120,7 +152,8 @@ int	intersect_cylinder(t_ray ray, t_cylinder_data *cy, t_hit *hit)
 		best.blue = cy->blue;
 		best.shininess = cy->shininess;
 		best.specular_strength = cy->specular_strength;
-		best.has_texture = 0;
+		best.texture_id = cy->texture_id;
+		best.bump_strength = cy->bump_strength;
 		best.checker = 0;
 		if (cy->checker)
 		{
@@ -129,6 +162,15 @@ int	intersect_cylinder(t_ray ray, t_cylinder_data *cy, t_hit *hit)
 					cy->diameter / 2.0, best.local_h);
 			else
 				apply_flat_checker(&best, best.point, best.normal);
+		}
+		if (cy->texture_id >= 0)
+		{
+			if (best.side_hit)
+				compute_side_uv(&best, center, axis, cy->diameter / 2.0,
+					best.local_h, cy->tex_repeat);
+			else
+				compute_flat_uv(&best, best.point, best.normal,
+					cy->tex_repeat);
 		}
 		*hit = best;
 	}

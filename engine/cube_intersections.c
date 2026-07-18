@@ -115,6 +115,26 @@ static void	apply_cube_checker(t_hit *hit, double *lo, double *ld,
 	}
 }
 
+static void	compute_cube_uv(t_hit *hit, double *lo, double *ld, double t,
+			int axis, double repeat)
+{
+	double	local_point[3];
+	int		u_idx;
+	int		v_idx;
+	int		i;
+
+	i = 0;
+	while (i < 3)
+	{
+		local_point[i] = lo[i] + t * ld[i];
+		i++;
+	}
+	u_idx = (axis + 1) % 3;
+	v_idx = (axis + 2) % 3;
+	hit->u = (local_point[u_idx] / TEXTURE_UNIT_SIZE) * repeat;
+	hit->v = (local_point[v_idx] / TEXTURE_UNIT_SIZE) * repeat;
+}
+
 int	intersect_cube(t_ray ray, t_cube_data *cube, t_hit *hit)
 {
 	t_vec3	center;
@@ -170,9 +190,12 @@ int	intersect_cube(t_ray ray, t_cube_data *cube, t_hit *hit)
 	hit->blue = cube->blue;
 	hit->shininess = cube->shininess;
 	hit->specular_strength = cube->specular_strength;
-	hit->has_texture = 0;
+	hit->texture_id = cube->texture_id;
+	hit->bump_strength = cube->bump_strength;
 	hit->checker = 0;
 	if (cube->checker)
 		apply_cube_checker(hit, lo, ld, t, axis);
+	if (cube->texture_id >= 0)
+		compute_cube_uv(hit, lo, ld, t, axis, cube->tex_repeat);
 	return (1);
 }

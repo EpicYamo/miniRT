@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 14:03:46 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:27:58 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/12 22:12:44 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	free_scene(void)
 	free(scene->sphere_data);
 	free(scene->light_data);
 	free(scene->cube_data);
+	free(scene->triangle_data);
 	free(scene);
 }
 

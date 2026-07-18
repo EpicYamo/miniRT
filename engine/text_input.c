@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 23:16:29 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 02:16:44 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 00:22:59 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,34 @@ static void	confirm_property_input(t_rt *rt)
 	rt->input.text_input_mode = 0;
 }
 
+static void	confirm_texture_input(t_rt *rt)
+{
+	int	type;
+	int	index;
+	int	old_id;
+	int	new_id;
+
+	type = rt->input.selected_type;
+	index = find_index_by_id(rt->old_data->scene, type,
+			rt->input.selected_id);
+	if (index == -1)
+	{
+		rt->input.text_input_mode = 0;
+		return ;
+	}
+	old_id = (int)get_property_value(rt->old_data->scene, type, index,
+			PROP_TEXTURE);
+	if (rt->input.text_len == 0)
+		new_id = -1;
+	else
+		new_id = get_or_load_texture(rt, rt->input.text_buffer);
+	push_property_undo(rt, type, rt->input.selected_id, PROP_TEXTURE,
+		(double)old_id);
+	set_property_value(rt->old_data->scene, type, index, PROP_TEXTURE,
+		(double)new_id);
+	rt->input.text_input_mode = 0;
+}
+
 void	confirm_text_input(t_rt *rt)
 {
 	double	value;
@@ -92,12 +120,20 @@ void	confirm_text_input(t_rt *rt)
 	rt->input.text_input_mode = 0;
 }
 
+static int	is_filename_char(int c)
+{
+	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+		|| (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-');
+}
+
 void	handle_text_input_key(t_rt *rt, int keycode)
 {
 	if (keycode == 65293)
 	{
 		if (rt->input.text_target == TEXT_TARGET_PROPERTY)
 			confirm_property_input(rt);
+		else if (rt->input.text_target == TEXT_TARGET_TEXTURE_NAME)
+			confirm_texture_input(rt);
 		else
 			confirm_text_input(rt);
 	}
@@ -111,6 +147,16 @@ void	handle_text_input_key(t_rt *rt, int keycode)
 		if (rt->input.text_len > 0)
 			rt->input.text_buffer[--rt->input.text_len] = '\0';
 	}
+	else if (rt->input.text_target == TEXT_TARGET_TEXTURE_NAME)
+	{
+		if (is_filename_char(keycode)
+			&& rt->input.text_len < TEXT_BUFFER_SIZE - 1)
+		{
+			rt->input.text_buffer[rt->input.text_len] = (char)keycode;
+			rt->input.text_len++;
+			rt->input.text_buffer[rt->input.text_len] = '\0';
+		}
+	}
 	else if ((keycode >= '0' && keycode <= '9') || keycode == '-'
 		|| keycode == '.')
 	{
@@ -123,7 +169,7 @@ void	handle_text_input_key(t_rt *rt, int keycode)
 	}
 }
 
-static char	*property_field_label(int field)
+static char	*property_field_label(int type, int field)
 {
 	if (field == PROP_COLOR_R)
 		return ("Color R");
@@ -133,7 +179,23 @@ static char	*property_field_label(int field)
 		return ("Color B");
 	if (field == PROP_SIZE1)
 		return ("Diameter");
-	return ("Height");
+	if (field == PROP_SIZE2 && type == OBJ_TRIANGLE)
+		return ("Depth");
+	if (field == PROP_SIZE2)
+		return ("Height");
+	if (field == PROP_CHECKER)
+		return ("Checker");
+	if (field == PROP_SHININESS)
+		return ("Shininess");
+	if (field == PROP_SPEC_STRENGTH)
+		return ("Specular");
+	if (field == PROP_TEX_REPEAT)
+		return ("Repeat");
+	if (field == PROP_KIND)
+		return ("Kind");
+	if (field == PROP_BRIGHTNESS)
+		return ("Brightness");
+	return ("Bump");
 }
 
 void	draw_text_input(t_rt *rt)
@@ -147,7 +209,12 @@ void	draw_text_input(t_rt *rt)
 	line[0] = '\0';
 	if (rt->input.text_target == TEXT_TARGET_PROPERTY)
 	{
-		strcpy(line, property_field_label(rt->input.active_property));
+		strcpy(line, property_field_label(rt->input.selected_type,
+				rt->input.active_property));
+	}
+	else if (rt->input.text_target == TEXT_TARGET_TEXTURE_NAME)
+	{
+		strcpy(line, "Texture file");
 	}
 	else
 	{

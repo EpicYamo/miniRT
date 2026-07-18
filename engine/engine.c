@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 16:42:20 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 04:14:06 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 01:01:54 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,15 @@ static int	test_selected_hit(t_scene *scene, t_ray ray, int type, int id)
 		light_sphere.checker = 0;
 		light_sphere.shininess = 0.0;
 		light_sphere.specular_strength = 0.0;
-		light_sphere.has_texture = 0;
+		light_sphere.texture_id = -1;
+		light_sphere.tex_repeat = 1.0;
+		light_sphere.bump_strength = 0.0;
 		return (intersect_sphere(ray, &light_sphere, &hit));
 	}
 	if (type == OBJ_CUBE)
 		return (intersect_cube(ray, &scene->cube_data[index], &hit));
+	if (type == OBJ_TRIANGLE)
+		return (intersect_triangle(ray, &scene->triangle_data[index], &hit));
 	return (0);
 }
 
@@ -364,6 +368,19 @@ static int	find_closest_hit(t_scene *scene, t_ray ray, t_hit *closest)
 		i++;
 	}
 	i = 0;
+	while (i < scene->element_counts.triangle_count)
+	{
+		if (intersect_triangle(ray, &scene->triangle_data[i], &current)
+			&& current.t < closest->t)
+		{
+			*closest = current;
+			closest->obj_type = OBJ_TRIANGLE;
+			closest->obj_index = (int)i;
+			found = 1;
+		}
+		i++;
+	}
+	i = 0;
 	while (i < scene->element_counts.light_count)
 	{
 		if (scene->light_data[i].diameter > 0.0)
@@ -378,7 +395,9 @@ static int	find_closest_hit(t_scene *scene, t_ray ray, t_hit *closest)
 			light_sphere.checker = 0;
 			light_sphere.shininess = 0.0;
 			light_sphere.specular_strength = 0.0;
-			light_sphere.has_texture = 0;
+			light_sphere.texture_id = -1;
+			light_sphere.tex_repeat = 1.0;
+			light_sphere.bump_strength = 0.0;
 			if (intersect_sphere(ray, &light_sphere, &current)
 				&& current.t < closest->t)
 			{
@@ -416,8 +435,10 @@ int	pick_object(t_scene *scene, int x, int y, int *type, int *id)
 			*id = scene->cylinder_data[hit.obj_index].id;
 		else if (hit.obj_type == OBJ_LIGHT)
 			*id = scene->light_data[hit.obj_index].id;
-		else
+		else if (hit.obj_type == OBJ_CUBE)
 			*id = scene->cube_data[hit.obj_index].id;
+		else
+			*id = scene->triangle_data[hit.obj_index].id;
 		return (1);
 	}
 	return (0);

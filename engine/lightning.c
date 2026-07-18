@@ -43,39 +43,83 @@ static void	apply_checker(t_hit *hit)
 	}
 }
 
-static void	sample_texture(t_scene *scene, t_hit *hit)
+static void	sample_pixel(t_scene *scene, int tex_id, double u, double v,
+			unsigned int *r, unsigned int *g, unsigned int *b)
 {
-	double			u;
-	double			v;
-	double			ny;
+	t_texture		*tex;
+	double			wu;
+	double			wv;
 	int				px;
 	int				py;
 	unsigned char	*pixel;
 
-	if (!hit->has_texture || !scene->tex_loaded)
-		return ;
-	u = (atan2(hit->normal.z, hit->normal.x) + M_PI) / (2.0 * M_PI);
-	ny = hit->normal.y;
-	if (ny < -1.0)
-		ny = -1.0;
-	if (ny > 1.0)
-		ny = 1.0;
-	v = acos(ny) / M_PI;
-	px = (int)(u * scene->tex_width);
-	py = (int)(v * scene->tex_height);
+	tex = &scene->textures[tex_id];
+	wu = u - floor(u);
+	wv = v - floor(v);
+	px = (int)(wu * tex->width);
+	py = (int)(wv * tex->height);
 	if (px < 0)
 		px = 0;
-	if (px >= scene->tex_width)
-		px = scene->tex_width - 1;
+	if (px >= tex->width)
+		px = tex->width - 1;
 	if (py < 0)
 		py = 0;
-	if (py >= scene->tex_height)
-		py = scene->tex_height - 1;
-	pixel = (unsigned char *)(scene->tex_addr + py * scene->tex_line
-			+ px * (scene->tex_bpp / 8));
-	hit->blue = pixel[0];
-	hit->green = pixel[1];
-	hit->red = pixel[2];
+	if (py >= tex->height)
+		py = tex->height - 1;
+	pixel = (unsigned char *)(tex->addr + py * tex->line
+			+ px * (tex->bpp / 8));
+	*b = pixel[0];
+	*g = pixel[1];
+	*r = pixel[2];
+}
+
+static double	sample_brightness(t_scene *scene, int tex_id, double u,
+			double v)
+{
+	unsigned int	r;
+	unsigned int	g;
+	unsigned int	b;
+
+	sample_pixel(scene, tex_id, u, v, &r, &g, &b);
+	return ((r + g + b) / (3.0 * 255.0));
+}
+
+static void	build_normal_basis(t_vec3 n, t_vec3 *tangent, t_vec3 *bitangent)
+{
+	t_vec3	reference;
+
+	reference = vec3_create(0.0, 1.0, 0.0);
+	if (fabs(vec3_dot(n, reference)) > 0.99)
+		reference = vec3_create(1.0, 0.0, 0.0);
+	*tangent = vec3_normalize(vec3_cross(reference, n));
+	*bitangent = vec3_cross(n, *tangent);
+}
+
+static void	apply_texture_and_bump(t_scene *scene, t_hit *hit)
+{
+	unsigned int	r;
+	unsigned int	g;
+	unsigned int	b;
+	double			h_c;
+	double			h_u;
+	double			h_v;
+	t_vec3			tangent;
+	t_vec3			bitangent;
+	t_vec3			perturb;
+
+	sample_pixel(scene, hit->texture_id, hit->u, hit->v, &r, &g, &b);
+	hit->red = r;
+	hit->green = g;
+	hit->blue = b;
+	if (hit->bump_strength <= 0.0)
+		return ;
+	h_c = sample_brightness(scene, hit->texture_id, hit->u, hit->v);
+	h_u = sample_brightness(scene, hit->texture_id, hit->u + 0.01, hit->v);
+	h_v = sample_brightness(scene, hit->texture_id, hit->u, hit->v + 0.01);
+	build_normal_basis(hit->normal, &tangent, &bitangent);
+	perturb = vec3_add(vec3_mul(tangent, (h_u - h_c) * hit->bump_strength),
+			vec3_mul(bitangent, (h_v - h_c) * hit->bump_strength));
+	hit->normal = vec3_normalize(vec3_sub(hit->normal, perturb));
 }
 
 static void	accumulate_light(t_scene *scene, t_hit *hit, t_light_data *light,
@@ -125,8 +169,8 @@ int	compute_color(t_scene *scene, t_hit *hit, t_vec3 view_dir,
 	size_t	light_limit;
 	size_t	i;
 
-	if (hit->has_texture)
-		sample_texture(scene, hit);
+	if (hit->texture_id >= 0 && hit->texture_id < scene->texture_count)
+		apply_texture_and_bump(scene, hit);
 	else
 		apply_checker(hit);
 	acc[0] = 0.0;
@@ -190,6 +234,14 @@ int	is_in_shadow(t_scene *scene, t_vec3 point, t_vec3 normal, t_vec3 light_pos)
 	while (i < scene->element_counts.cube_count)
 	{
 		if (intersect_cube(shadow_ray, &scene->cube_data[i], &hit))
+			if (hit.t < light_dist)
+				return (1);
+		i++;
+	}
+	i = 0;
+	while (i < scene->element_counts.triangle_count)
+	{
+		if (intersect_triangle(shadow_ray, &scene->triangle_data[i], &hit))
 			if (hit.t < light_dist)
 				return (1);
 		i++;

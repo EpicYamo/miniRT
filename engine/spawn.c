@@ -50,7 +50,9 @@ void	spawn_sphere(t_rt *rt)
 	scene->sphere_data[count].checker = 0;
 	scene->sphere_data[count].shininess = DEFAULT_SHININESS;
 	scene->sphere_data[count].specular_strength = DEFAULT_SPEC_STRENGTH;
-	scene->sphere_data[count].has_texture = 0;
+	scene->sphere_data[count].texture_id = -1;
+	scene->sphere_data[count].tex_repeat = 1.0;
+	scene->sphere_data[count].bump_strength = 0.0;
 	scene->element_counts.sphere_count++;
 	rt->input.selected_type = OBJ_SPHERE;
 	rt->input.selected_id = scene->sphere_data[count].id;
@@ -88,6 +90,9 @@ void	spawn_plane(t_rt *rt)
 	scene->plane_data[count].checker = 0;
 	scene->plane_data[count].shininess = DEFAULT_SHININESS;
 	scene->plane_data[count].specular_strength = DEFAULT_SPEC_STRENGTH;
+	scene->plane_data[count].texture_id = -1;
+	scene->plane_data[count].tex_repeat = 1.0;
+	scene->plane_data[count].bump_strength = 0.0;
 	scene->element_counts.plane_count++;
 	rt->input.selected_type = OBJ_PLANE;
 	rt->input.selected_id = scene->plane_data[count].id;
@@ -128,6 +133,9 @@ void	spawn_cylinder(t_rt *rt)
 	scene->cylinder_data[count].checker = 0;
 	scene->cylinder_data[count].shininess = DEFAULT_SHININESS;
 	scene->cylinder_data[count].specular_strength = DEFAULT_SPEC_STRENGTH;
+	scene->cylinder_data[count].texture_id = -1;
+	scene->cylinder_data[count].tex_repeat = 1.0;
+	scene->cylinder_data[count].bump_strength = 0.0;
 	scene->element_counts.cylinder_count++;
 	rt->input.selected_type = OBJ_CYLINDER;
 	rt->input.selected_id = scene->cylinder_data[count].id;
@@ -199,6 +207,9 @@ void	spawn_cube(t_rt *rt)
 	scene->cube_data[count].checker = 0;
 	scene->cube_data[count].shininess = DEFAULT_SHININESS;
 	scene->cube_data[count].specular_strength = DEFAULT_SPEC_STRENGTH;
+	scene->cube_data[count].texture_id = -1;
+	scene->cube_data[count].tex_repeat = 1.0;
+	scene->cube_data[count].bump_strength = 0.0;
 	scene->element_counts.cube_count++;
 	rt->input.selected_type = OBJ_CUBE;
 	rt->input.selected_id = scene->cube_data[count].id;
@@ -206,6 +217,53 @@ void	spawn_cube(t_rt *rt)
 	rt->input.dragging_axis = -1;
 	rt->input.active_property = PROP_NONE;
 	push_undo(rt, OBJ_CUBE, scene->cube_data[count].id, UNDO_SPAWN,
+		vec3_create(0.0, 0.0, 0.0));
+}
+
+void	spawn_triangle(t_rt *rt, int kind)
+{
+	t_scene			*scene;
+	t_triangle_data	*new_arr;
+	size_t			count;
+	t_vec3			pos;
+	t_vec3			forward;
+
+	scene = rt->old_data->scene;
+	count = scene->element_counts.triangle_count;
+	new_arr = realloc(scene->triangle_data,
+			sizeof(t_triangle_data) * (count + 1));
+	if (!new_arr)
+		return ;
+	scene->triangle_data = new_arr;
+	pos = spawn_position(scene);
+	forward = vec3_normalize(vec3_create(scene->camera_data.vector_x,
+				scene->camera_data.vector_y, scene->camera_data.vector_z));
+	scene->triangle_data[count].pos_x = pos.x;
+	scene->triangle_data[count].pos_y = pos.y;
+	scene->triangle_data[count].pos_z = pos.z;
+	scene->triangle_data[count].vector_x = -forward.x;
+	scene->triangle_data[count].vector_y = -forward.y;
+	scene->triangle_data[count].vector_z = -forward.z;
+	scene->triangle_data[count].size = TRIANGLE_SPAWN_SIZE;
+	scene->triangle_data[count].depth = TRIANGLE_SPAWN_DEPTH;
+	scene->triangle_data[count].kind = kind;
+	scene->triangle_data[count].red = 255;
+	scene->triangle_data[count].green = 255;
+	scene->triangle_data[count].blue = 255;
+	scene->triangle_data[count].id = rt->input.next_triangle_id++;
+	scene->triangle_data[count].checker = 0;
+	scene->triangle_data[count].shininess = DEFAULT_SHININESS;
+	scene->triangle_data[count].specular_strength = DEFAULT_SPEC_STRENGTH;
+	scene->triangle_data[count].texture_id = -1;
+	scene->triangle_data[count].tex_repeat = 1.0;
+	scene->triangle_data[count].bump_strength = 0.0;
+	scene->element_counts.triangle_count++;
+	rt->input.selected_type = OBJ_TRIANGLE;
+	rt->input.selected_id = scene->triangle_data[count].id;
+	rt->input.edit_mode = EDIT_MOVE;
+	rt->input.dragging_axis = -1;
+	rt->input.active_property = PROP_NONE;
+	push_undo(rt, OBJ_TRIANGLE, scene->triangle_data[count].id, UNDO_SPAWN,
 		vec3_create(0.0, 0.0, 0.0));
 }
 
@@ -269,6 +327,17 @@ void	shift_remove(t_scene *scene, int type, int index)
 		}
 		scene->element_counts.cube_count--;
 	}
+	else if (type == OBJ_TRIANGLE)
+	{
+		count = scene->element_counts.triangle_count;
+		i = index;
+		while (i < count - 1)
+		{
+			scene->triangle_data[i] = scene->triangle_data[i + 1];
+			i++;
+		}
+		scene->element_counts.triangle_count--;
+	}
 }
 
 void	shift_undo_stack(t_rt *rt)
@@ -314,8 +383,10 @@ void	delete_selected(t_rt *rt)
 		e->del_cylinder = scene->cylinder_data[index];
 	else if (type == OBJ_LIGHT)
 		e->del_light = scene->light_data[index];
-	else
+	else if (type == OBJ_CUBE)
 		e->del_cube = scene->cube_data[index];
+	else
+		e->del_triangle = scene->triangle_data[index];
 	rt->undo_count++;
 	shift_remove(scene, type, index);
 	rt->input.selected_type = OBJ_NONE;

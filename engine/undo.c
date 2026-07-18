@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 23:12:06 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:27:37 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 00:50:25 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	undo_last(t_rt *rt)
 				= e->del_light;
 			scene->element_counts.light_count++;
 		}
-		else
+		else if (e->obj_type == OBJ_CUBE)
 		{
 			scene->cube_data = realloc(scene->cube_data,
 					sizeof(t_cube_data)
@@ -102,6 +102,15 @@ void	undo_last(t_rt *rt)
 			scene->cube_data[scene->element_counts.cube_count]
 				= e->del_cube;
 			scene->element_counts.cube_count++;
+		}
+		else
+		{
+			scene->triangle_data = realloc(scene->triangle_data,
+					sizeof(t_triangle_data)
+					* (scene->element_counts.triangle_count + 1));
+			scene->triangle_data[scene->element_counts.triangle_count]
+				= e->del_triangle;
+			scene->element_counts.triangle_count++;
 		}
 		return ;
 	}

@@ -47,6 +47,11 @@ int	intersect_sphere(t_ray ray, t_sphere_data *sphere, t_hit *hit)
 	hit->checker = sphere->checker;
 	hit->shininess = sphere->shininess;
 	hit->specular_strength = sphere->specular_strength;
-	hit->has_texture = sphere->has_texture;
+	hit->texture_id = sphere->texture_id;
+	hit->bump_strength = sphere->bump_strength;
+	hit->u = ((atan2(hit->normal.z, hit->normal.x) + M_PI)
+			/ (2.0 * M_PI)) * sphere->tex_repeat;
+	hit->v = (acos(fmax(-1.0, fmin(1.0, hit->normal.y))) / M_PI)
+		* sphere->tex_repeat;
 	return (1);
 }
