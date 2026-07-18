@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 16:42:20 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:26:49 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 04:14:06 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,10 @@ static int	test_selected_hit(t_scene *scene, t_ray ray, int type, int id)
 		light_sphere.pos_y = scene->light_data[index].pos_y;
 		light_sphere.pos_z = scene->light_data[index].pos_z;
 		light_sphere.diameter = scene->light_data[index].diameter;
+		light_sphere.checker = 0;
+		light_sphere.shininess = 0.0;
+		light_sphere.specular_strength = 0.0;
+		light_sphere.has_texture = 0;
 		return (intersect_sphere(ray, &light_sphere, &hit));
 	}
 	if (type == OBJ_CUBE)
@@ -129,6 +133,58 @@ static void	draw_selection_outline(t_rt *rt_this)
 	}
 }
 
+static int	shade_ray(t_scene *scene, t_ray ray, int high_quality)
+{
+	t_hit	closest;
+	t_vec3	view_dir;
+
+	if (find_closest_hit(scene, ray, &closest))
+	{
+		if (closest.obj_type == OBJ_LIGHT)
+			return (color_to_int(closest.red, closest.green, closest.blue));
+		view_dir = vec3_mul(ray.direction, -1.0);
+		return (compute_color(scene, &closest, view_dir, high_quality));
+	}
+	return (color_to_int(0, 0, 0));
+}
+
+static int	supersample_pixel(t_scene *scene, int x, int y)
+{
+	int		sx;
+	int		sy;
+	int		color;
+	double	fx;
+	double	fy;
+	double	acc[3];
+	t_ray	ray;
+
+	acc[0] = 0.0;
+	acc[1] = 0.0;
+	acc[2] = 0.0;
+	sy = 0;
+	while (sy < AA_SAMPLES)
+	{
+		sx = 0;
+		while (sx < AA_SAMPLES)
+		{
+			fx = x + ((double)sx + 0.5) / AA_SAMPLES;
+			fy = y + ((double)sy + 0.5) / AA_SAMPLES;
+			ray = generate_ray_at(scene, fx, fy);
+			color = shade_ray(scene, ray, 1);
+			acc[0] += (color >> 16) & 0xFF;
+			acc[1] += (color >> 8) & 0xFF;
+			acc[2] += color & 0xFF;
+			sx++;
+		}
+		sy++;
+	}
+	acc[0] /= (AA_SAMPLES * AA_SAMPLES);
+	acc[1] /= (AA_SAMPLES * AA_SAMPLES);
+	acc[2] /= (AA_SAMPLES * AA_SAMPLES);
+	return (color_to_int((unsigned int)acc[0], (unsigned int)acc[1],
+			(unsigned int)acc[2]));
+}
+
 void	render_scene(t_rt *rt_this, int step)
 {
 	int		x;
@@ -140,10 +196,10 @@ void	render_scene(t_rt *rt_this, int step)
 	int		last_percent;
 	int		percent;
 	t_ray	ray;
-	t_hit	closest;
-	t_vec3	view_dir;
+	t_scene	*scene;
 	int		color;
 
+	scene = rt_this->old_data->scene;
 	high_quality = (step == 1);
 	last_percent = -1;
 	if (high_quality)
@@ -154,24 +210,14 @@ void	render_scene(t_rt *rt_this, int step)
 		x = 0;
 		while (x < WIDTH)
 		{
-			ray = generate_ray(rt_this->old_data->scene, x, y);
-			if (find_closest_hit(rt_this->old_data->scene, ray, &closest))
-			{
-				if (closest.obj_type == OBJ_LIGHT)
-					color = color_to_int(closest.red, closest.green,
-							closest.blue);
-				else
-				{
-					view_dir = vec3_mul(ray.direction, -1.0);
-					color = compute_color(rt_this->old_data->scene,
-							&closest, view_dir, high_quality);
-				}
-			}
+			ray = generate_ray(scene, x, y);
+			if (high_quality)
+				color = supersample_pixel(scene, x, y);
 			else
-				color = color_to_int(0, 0, 0);
+				color = shade_ray(scene, ray, high_quality);
 			sel_hit = 0;
 			if (rt_this->input.selected_type != OBJ_NONE)
-				sel_hit = test_selected_hit(rt_this->old_data->scene, ray,
+				sel_hit = test_selected_hit(scene, ray,
 						rt_this->input.selected_type,
 						rt_this->input.selected_id);
 			by = 0;
@@ -213,7 +259,7 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-t_ray	generate_ray(t_scene *scene, int x, int y)
+t_ray	generate_ray_at(t_scene *scene, double fx, double fy)
 {
 	t_ray	ray;
 	t_vec3	cam_forward;
@@ -239,14 +285,19 @@ t_ray	generate_ray(t_scene *scene, int x, int y)
 	cam_up = vec3_cross(cam_right, cam_forward);
 	scale = tan((scene->camera_data.fov * M_PI / 180.0) / 2.0);
 	aspect = (double)WIDTH / (double)HEIGHT;
-	px = (2.0 * (x + 0.5) / WIDTH - 1.0) * scale * aspect;
-	py = (1.0 - 2.0 * (y + 0.5) / HEIGHT) * scale;
+	px = (2.0 * fx / WIDTH - 1.0) * scale * aspect;
+	py = (1.0 - 2.0 * fy / HEIGHT) * scale;
 	r_vector = vec3_mul(cam_right, px);
 	u_vector = vec3_mul(cam_up, py);
 	ray.direction = vec3_add(r_vector, u_vector);
 	ray.direction = vec3_add(ray.direction, cam_forward);
 	ray.direction = vec3_normalize(ray.direction);
 	return (ray);
+}
+
+t_ray	generate_ray(t_scene *scene, int x, int y)
+{
+	return (generate_ray_at(scene, (double)x + 0.5, (double)y + 0.5));
 }
 
 
@@ -324,6 +375,10 @@ static int	find_closest_hit(t_scene *scene, t_ray ray, t_hit *closest)
 			light_sphere.red = scene->light_data[i].red;
 			light_sphere.green = scene->light_data[i].green;
 			light_sphere.blue = scene->light_data[i].blue;
+			light_sphere.checker = 0;
+			light_sphere.shininess = 0.0;
+			light_sphere.specular_strength = 0.0;
+			light_sphere.has_texture = 0;
 			if (intersect_sphere(ray, &light_sphere, &current)
 				&& current.t < closest->t)
 			{

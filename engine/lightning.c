@@ -12,8 +12,6 @@
 #include <math.h>
 
 #define SHADOW_BIAS 1e-4
-#define SPECULAR_SHININESS 32.0
-#define SPECULAR_STRENGTH 0.6
 
 static double	clamp01(double v)
 {
@@ -22,6 +20,62 @@ static double	clamp01(double v)
 	if (v > 1.0)
 		return (1.0);
 	return (v);
+}
+
+static void	apply_checker(t_hit *hit)
+{
+	int	cx;
+	int	cy;
+	int	cz;
+	int	parity;
+
+	if (!hit->checker)
+		return ;
+	cx = (int)floor(hit->point.x / CHECKER_CELL_SIZE);
+	cy = (int)floor(hit->point.y / CHECKER_CELL_SIZE);
+	cz = (int)floor(hit->point.z / CHECKER_CELL_SIZE);
+	parity = ((cx + cy + cz) % 2 + 2) % 2;
+	if (parity != 0)
+	{
+		hit->red = (unsigned int)(hit->red * 0.4);
+		hit->green = (unsigned int)(hit->green * 0.4);
+		hit->blue = (unsigned int)(hit->blue * 0.4);
+	}
+}
+
+static void	sample_texture(t_scene *scene, t_hit *hit)
+{
+	double			u;
+	double			v;
+	double			ny;
+	int				px;
+	int				py;
+	unsigned char	*pixel;
+
+	if (!hit->has_texture || !scene->tex_loaded)
+		return ;
+	u = (atan2(hit->normal.z, hit->normal.x) + M_PI) / (2.0 * M_PI);
+	ny = hit->normal.y;
+	if (ny < -1.0)
+		ny = -1.0;
+	if (ny > 1.0)
+		ny = 1.0;
+	v = acos(ny) / M_PI;
+	px = (int)(u * scene->tex_width);
+	py = (int)(v * scene->tex_height);
+	if (px < 0)
+		px = 0;
+	if (px >= scene->tex_width)
+		px = scene->tex_width - 1;
+	if (py < 0)
+		py = 0;
+	if (py >= scene->tex_height)
+		py = scene->tex_height - 1;
+	pixel = (unsigned char *)(scene->tex_addr + py * scene->tex_line
+			+ px * (scene->tex_bpp / 8));
+	hit->blue = pixel[0];
+	hit->green = pixel[1];
+	hit->red = pixel[2];
 }
 
 static void	accumulate_light(t_scene *scene, t_hit *hit, t_light_data *light,
@@ -51,7 +105,7 @@ static void	accumulate_light(t_scene *scene, t_hit *hit, t_light_data *light,
 	spec = vec3_dot(vec3_normalize(reflect_dir), view_dir);
 	if (spec < 0.0)
 		spec = 0.0;
-	spec = pow(spec, SPECULAR_SHININESS) * SPECULAR_STRENGTH
+	spec = pow(spec, hit->shininess) * hit->specular_strength
 		* light->brightness;
 	acc[0] += spec * (light->red / 255.0);
 	acc[1] += spec * (light->green / 255.0);
@@ -71,6 +125,10 @@ int	compute_color(t_scene *scene, t_hit *hit, t_vec3 view_dir,
 	size_t	light_limit;
 	size_t	i;
 
+	if (hit->has_texture)
+		sample_texture(scene, hit);
+	else
+		apply_checker(hit);
 	acc[0] = 0.0;
 	acc[1] = 0.0;
 	acc[2] = 0.0;

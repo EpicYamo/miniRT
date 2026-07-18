@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:19:55 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 04:19:00 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,15 @@
 # define PROP_COLOR_B 2
 # define PROP_SIZE1 3
 # define PROP_SIZE2 4
+# define PROP_CHECKER 5
+# define PROP_SHININESS 6
+# define PROP_SPEC_STRENGTH 7
+# define PROP_TEXTURE 8
+# define CHECKER_CELL_SIZE 10.0
+# define DEFAULT_SHININESS 32.0
+# define DEFAULT_SPEC_STRENGTH 0.6
+# define TEXTURE_PATH "textures/sphere_texture.xpm"
+# define AA_SAMPLES 2
 # define TEXT_TARGET_AXIS 0
 # define TEXT_TARGET_PROPERTY 1
 
@@ -115,6 +124,10 @@ typedef struct s_sphere_data
 	unsigned int	green;
 	unsigned int	blue;
 	int				id;
+	int				checker;
+	double			shininess;
+	double			specular_strength;
+	int				has_texture;
 }	t_sphere_data;
 
 typedef struct s_plane_data
@@ -129,6 +142,9 @@ typedef struct s_plane_data
 	unsigned int	green;
 	unsigned int	blue;
 	int				id;
+	int				checker;
+	double			shininess;
+	double			specular_strength;
 }	t_plane_data;
 
 typedef struct s_cylinder_data
@@ -145,6 +161,9 @@ typedef struct s_cylinder_data
 	unsigned int	green;
 	unsigned int	blue;
 	int				id;
+	int				checker;
+	double			shininess;
+	double			specular_strength;
 }	t_cylinder_data;
 
 typedef struct s_cube_data
@@ -160,6 +179,9 @@ typedef struct s_cube_data
 	unsigned int	green;
 	unsigned int	blue;
 	int				id;
+	int				checker;
+	double			shininess;
+	double			specular_strength;
 }	t_cube_data;
 
 typedef struct s_scene
@@ -172,6 +194,14 @@ typedef struct s_scene
 	t_plane_data	*plane_data;
 	t_cylinder_data	*cylinder_data;
 	t_cube_data		*cube_data;
+	void			*tex_img;
+	char			*tex_addr;
+	int				tex_width;
+	int				tex_height;
+	int				tex_bpp;
+	int				tex_line;
+	int				tex_endian;
+	int				tex_loaded;
 }	t_scene;
 
 typedef struct s_data
@@ -294,6 +324,12 @@ typedef struct s_hit
 	int				is_marker;
 	int				obj_type;
 	int				obj_index;
+	int				checker;
+	double			shininess;
+	double			specular_strength;
+	int				has_texture;
+	int				side_hit;
+	double			local_h;
 }	t_hit;
 
 
@@ -362,6 +398,7 @@ int		is_in_shadow(t_scene *scene, t_vec3 point, t_vec3 normal, t_vec3 light_pos)
 int		intersect_plane(t_ray ray, t_plane_data *plane, t_hit *hit);
 int		intersect_cylinder(t_ray ray, t_cylinder_data *cy, t_hit *hit);
 int		intersect_cube(t_ray ray, t_cube_data *cube, t_hit *hit);
+void	init_texture(t_rt *rt);
 
 int		key_press(int keycode, t_rt *rt);
 int		key_release(int keycode, t_rt *rt);
@@ -375,6 +412,7 @@ double	get_time_seconds(void);
 void	update_movement(t_rt *rt);
 int		pick_object(t_scene *scene, int x, int y, int *type, int *index);
 t_ray	generate_ray(t_scene *scene, int x, int y);
+t_ray	generate_ray_at(t_scene *scene, double fx, double fy);
 int		project_point(t_scene *scene, t_vec3 point, int *out_x, int *out_y);
 int		color_to_int(unsigned int r, unsigned int g, unsigned int b);
 t_vec3	get_object_center(t_scene *scene, int type, int index);

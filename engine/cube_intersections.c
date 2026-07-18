@@ -85,6 +85,36 @@ static int	slab_test(double *lo, double *ld, double half, double *res)
 	return (1);
 }
 
+static void	apply_cube_checker(t_hit *hit, double *lo, double *ld,
+			double t, int axis)
+{
+	double	local_point[3];
+	int		u_idx;
+	int		v_idx;
+	int		cell_u;
+	int		cell_v;
+	int		parity;
+	int		i;
+
+	i = 0;
+	while (i < 3)
+	{
+		local_point[i] = lo[i] + t * ld[i];
+		i++;
+	}
+	u_idx = (axis + 1) % 3;
+	v_idx = (axis + 2) % 3;
+	cell_u = (int)floor(local_point[u_idx] / CHECKER_CELL_SIZE);
+	cell_v = (int)floor(local_point[v_idx] / CHECKER_CELL_SIZE);
+	parity = ((cell_u + cell_v) % 2 + 2) % 2;
+	if (parity != 0)
+	{
+		hit->red = (unsigned int)(hit->red * 0.4);
+		hit->green = (unsigned int)(hit->green * 0.4);
+		hit->blue = (unsigned int)(hit->blue * 0.4);
+	}
+}
+
 int	intersect_cube(t_ray ray, t_cube_data *cube, t_hit *hit)
 {
 	t_vec3	center;
@@ -138,5 +168,11 @@ int	intersect_cube(t_ray ray, t_cube_data *cube, t_hit *hit)
 	hit->red = cube->red;
 	hit->green = cube->green;
 	hit->blue = cube->blue;
+	hit->shininess = cube->shininess;
+	hit->specular_strength = cube->specular_strength;
+	hit->has_texture = 0;
+	hit->checker = 0;
+	if (cube->checker)
+		apply_cube_checker(hit, lo, ld, t, axis);
 	return (1);
 }

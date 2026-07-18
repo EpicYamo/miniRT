@@ -6,12 +6,39 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 19:10:03 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/07 19:13:03 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 04:19:14 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 #include <math.h>
+
+static void	apply_plane_checker(t_hit *hit, t_vec3 origin, t_vec3 normal)
+{
+	t_vec3	reference;
+	t_vec3	right;
+	t_vec3	tangent;
+	t_vec3	rel;
+	int		cell_u;
+	int		cell_v;
+	int		parity;
+
+	reference = vec3_create(0.0, 1.0, 0.0);
+	if (fabs(vec3_dot(normal, reference)) > 0.99)
+		reference = vec3_create(1.0, 0.0, 0.0);
+	right = vec3_normalize(vec3_cross(reference, normal));
+	tangent = vec3_cross(normal, right);
+	rel = vec3_sub(hit->point, origin);
+	cell_u = (int)floor(vec3_dot(rel, right) / CHECKER_CELL_SIZE);
+	cell_v = (int)floor(vec3_dot(rel, tangent) / CHECKER_CELL_SIZE);
+	parity = ((cell_u + cell_v) % 2 + 2) % 2;
+	if (parity != 0)
+	{
+		hit->red = (unsigned int)(hit->red * 0.4);
+		hit->green = (unsigned int)(hit->green * 0.4);
+		hit->blue = (unsigned int)(hit->blue * 0.4);
+	}
+}
 
 int	intersect_plane(t_ray ray, t_plane_data *plane, t_hit *hit)
 {
@@ -36,5 +63,11 @@ int	intersect_plane(t_ray ray, t_plane_data *plane, t_hit *hit)
 	hit->red = plane->red;
 	hit->green = plane->green;
 	hit->blue = plane->blue;
+	hit->shininess = plane->shininess;
+	hit->specular_strength = plane->specular_strength;
+	hit->has_texture = 0;
+	hit->checker = 0;
+	if (plane->checker)
+		apply_plane_checker(hit, point, normal);
 	return (1);
 }

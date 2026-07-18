@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:31:06 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:22:47 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/13 02:50:35 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,11 @@ void	create_sphere_data(t_scene *scene, char **scene_map)
 			fill_colors(&scene->sphere_data[index].red,
 				&scene->sphere_data[index].green,
 				&scene->sphere_data[index].blue, &scene_map[i][j]);
+			scene->sphere_data[index].checker = 0;
+			scene->sphere_data[index].shininess = DEFAULT_SHININESS;
+			scene->sphere_data[index].specular_strength
+				= DEFAULT_SPEC_STRENGTH;
+			scene->sphere_data[index].has_texture = 0;
 		}
 	}
 }

@@ -44,5 +44,9 @@ int	intersect_sphere(t_ray ray, t_sphere_data *sphere, t_hit *hit)
 	hit->red = sphere->red;
 	hit->green = sphere->green;
 	hit->blue = sphere->blue;
+	hit->checker = sphere->checker;
+	hit->shininess = sphere->shininess;
+	hit->specular_strength = sphere->specular_strength;
+	hit->has_texture = sphere->has_texture;
 	return (1);
 }

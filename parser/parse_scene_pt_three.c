@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 23:43:32 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:22:32 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/02/13 03:08:56 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,9 @@ static void	fill_plane_data(t_scene *scene, char **scene_map, size_t index,
 	fill_colors(&scene->plane_data[index].red,
 		&scene->plane_data[index].green,
 		&scene->plane_data[index].blue, &scene_map[i][j]);
+	scene->plane_data[index].checker = 0;
+	scene->plane_data[index].shininess = DEFAULT_SHININESS;
+	scene->plane_data[index].specular_strength = DEFAULT_SPEC_STRENGTH;
 }
 
 void	create_cylinder_data(t_scene *scene, char **scene_map)
@@ -111,6 +114,9 @@ static void	fill_cylinder_data(t_scene *scene, char **scene_map, size_t index,
 	fill_colors(&scene->cylinder_data[index].red,
 		&scene->cylinder_data[index].green,
 		&scene->cylinder_data[index].blue, &scene_map[i][j]);
+	scene->cylinder_data[index].checker = 0;
+	scene->cylinder_data[index].shininess = DEFAULT_SHININESS;
+	scene->cylinder_data[index].specular_strength = DEFAULT_SPEC_STRENGTH;
 }
 
 void	create_cube_data(t_scene *scene, char **scene_map)
@@ -152,4 +158,7 @@ static void	fill_cube_data(t_scene *scene, char **scene_map, size_t index,
 		&scene->cube_data[index].green,
 		&scene->cube_data[index].blue, &scene_map[i][j]);
 	scene->cube_data[index].id = 0;
+	scene->cube_data[index].checker = 0;
+	scene->cube_data[index].shininess = DEFAULT_SHININESS;
+	scene->cube_data[index].specular_strength = DEFAULT_SPEC_STRENGTH;
 }

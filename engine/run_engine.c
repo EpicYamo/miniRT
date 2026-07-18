@@ -28,6 +28,7 @@ void	run_engine(void)
 	"-misc-fixed-bold-r-normal--32-*-*-*-*-*-iso8859-1");
 	init_scene_backup(&rt_this);
 	assign_object_ids(&rt_this);
+	init_texture(&rt_this);
 	init_image_data(&rt_this);
 	render_scene(&rt_this, 1);
 	present_frame(&rt_this);

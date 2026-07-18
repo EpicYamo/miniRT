@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/18 00:20:44 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 03:27:29 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 00:53:36 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,10 @@ void	spawn_sphere(t_rt *rt)
 	scene->sphere_data[count].green = 255;
 	scene->sphere_data[count].blue = 255;
 	scene->sphere_data[count].id = rt->input.next_sphere_id++;
+	scene->sphere_data[count].checker = 0;
+	scene->sphere_data[count].shininess = DEFAULT_SHININESS;
+	scene->sphere_data[count].specular_strength = DEFAULT_SPEC_STRENGTH;
+	scene->sphere_data[count].has_texture = 0;
 	scene->element_counts.sphere_count++;
 	rt->input.selected_type = OBJ_SPHERE;
 	rt->input.selected_id = scene->sphere_data[count].id;
@@ -81,6 +85,9 @@ void	spawn_plane(t_rt *rt)
 	scene->plane_data[count].green = 180;
 	scene->plane_data[count].blue = 180;
 	scene->plane_data[count].id = rt->input.next_plane_id++;
+	scene->plane_data[count].checker = 0;
+	scene->plane_data[count].shininess = DEFAULT_SHININESS;
+	scene->plane_data[count].specular_strength = DEFAULT_SPEC_STRENGTH;
 	scene->element_counts.plane_count++;
 	rt->input.selected_type = OBJ_PLANE;
 	rt->input.selected_id = scene->plane_data[count].id;
@@ -118,6 +125,9 @@ void	spawn_cylinder(t_rt *rt)
 	scene->cylinder_data[count].green = 255;
 	scene->cylinder_data[count].blue = 255;
 	scene->cylinder_data[count].id = rt->input.next_cylinder_id++;
+	scene->cylinder_data[count].checker = 0;
+	scene->cylinder_data[count].shininess = DEFAULT_SHININESS;
+	scene->cylinder_data[count].specular_strength = DEFAULT_SPEC_STRENGTH;
 	scene->element_counts.cylinder_count++;
 	rt->input.selected_type = OBJ_CYLINDER;
 	rt->input.selected_id = scene->cylinder_data[count].id;
@@ -186,6 +196,9 @@ void	spawn_cube(t_rt *rt)
 	scene->cube_data[count].green = 255;
 	scene->cube_data[count].blue = 255;
 	scene->cube_data[count].id = rt->input.next_cube_id++;
+	scene->cube_data[count].checker = 0;
+	scene->cube_data[count].shininess = DEFAULT_SHININESS;
+	scene->cube_data[count].specular_strength = DEFAULT_SPEC_STRENGTH;
 	scene->element_counts.cube_count++;
 	rt->input.selected_type = OBJ_CUBE;
 	rt->input.selected_id = scene->cube_data[count].id;
