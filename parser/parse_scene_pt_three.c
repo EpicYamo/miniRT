@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 23:43:32 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/13 03:08:56 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 03:22:32 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 static void	fill_plane_data(t_scene *scene, char **scene_map, size_t index,
 				size_t i);
 static void	fill_cylinder_data(t_scene *scene, char **scene_map, size_t index,
+				size_t i);
+static void	fill_cube_data(t_scene *scene, char **scene_map, size_t index,
 				size_t i);
 
 void	fill_normalized_vector(double *vec_x, double *vec_y, double *vec_z,
@@ -78,7 +80,7 @@ void	create_cylinder_data(t_scene *scene, char **scene_map)
 	i = -1;
 	while (scene_map[++i])
 	{
-		if (scene_map[i][0] == 'c')
+		if (scene_map[i][0] == 'c' && scene_map[i][1] == 'y')
 		{
 			index++;
 			fill_cylinder_data(scene, scene_map, index, i);
@@ -109,4 +111,45 @@ static void	fill_cylinder_data(t_scene *scene, char **scene_map, size_t index,
 	fill_colors(&scene->cylinder_data[index].red,
 		&scene->cylinder_data[index].green,
 		&scene->cylinder_data[index].blue, &scene_map[i][j]);
+}
+
+void	create_cube_data(t_scene *scene, char **scene_map)
+{
+	size_t	i;
+	size_t	index;
+
+	index = -1;
+	i = -1;
+	while (scene_map[++i])
+	{
+		if (scene_map[i][0] == 'c' && scene_map[i][1] == 'u')
+		{
+			index++;
+			fill_cube_data(scene, scene_map, index, i);
+		}
+	}
+}
+
+static void	fill_cube_data(t_scene *scene, char **scene_map, size_t index,
+	size_t i)
+{
+	size_t	j;
+
+	j = 2;
+	while (scene_map[i][j] == ' ')
+		j++;
+	fill_coordinates(&scene->cube_data[index].pos_x,
+		&scene->cube_data[index].pos_y,
+		&scene->cube_data[index].pos_z, &scene_map[i][j]);
+	skip_to_next_parameter(scene_map, &i, &j);
+	fill_normalized_vector(&scene->cube_data[index].vector_x,
+		&scene->cube_data[index].vector_y,
+		&scene->cube_data[index].vector_z, &scene_map[i][j]);
+	skip_to_next_parameter(scene_map, &i, &j);
+	scene->cube_data[index].size = ft_atod(&scene_map[i][j]);
+	skip_to_next_parameter(scene_map, &i, &j);
+	fill_colors(&scene->cube_data[index].red,
+		&scene->cube_data[index].green,
+		&scene->cube_data[index].blue, &scene_map[i][j]);
+	scene->cube_data[index].id = 0;
 }

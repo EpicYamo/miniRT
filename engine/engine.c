@@ -6,16 +6,28 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 16:42:20 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 01:01:54 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 03:26:49 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
 #include "../minilibx-linux/mlx.h"
 #include <math.h>
+#include <stdio.h>
 
 static int		sel_mask_buffer[WIDTH * HEIGHT];
 static int		find_closest_hit(t_scene *scene, t_ray ray, t_hit *closest);
+
+static void	draw_loading_screen(t_rt *rt_this, int percent)
+{
+	char	line[32];
+
+	mlx_clear_window(rt_this->old_data->mlx_ptr, rt_this->old_data->mlx_window);
+	sprintf(line, "Rendering... %d%%", percent);
+	mlx_string_put(rt_this->old_data->mlx_ptr, rt_this->old_data->mlx_window,
+		WIDTH / 2 - 170, HEIGHT / 2, 0xFFFFFF, line);
+	mlx_do_sync(rt_this->old_data->mlx_ptr);
+}
 
 static int	test_plane_marker(t_ray ray, t_plane_data *plane)
 {
@@ -43,8 +55,9 @@ static int	test_plane_marker(t_ray ray, t_plane_data *plane)
 
 static int	test_selected_hit(t_scene *scene, t_ray ray, int type, int id)
 {
-	t_hit	hit;
-	int		index;
+	t_hit			hit;
+	int				index;
+	t_sphere_data	light_sphere;
 
 	index = find_index_by_id(scene, type, id);
 	if (index == -1)
@@ -55,6 +68,16 @@ static int	test_selected_hit(t_scene *scene, t_ray ray, int type, int id)
 		return (intersect_cylinder(ray, &scene->cylinder_data[index], &hit));
 	if (type == OBJ_PLANE)
 		return (test_plane_marker(ray, &scene->plane_data[index]));
+	if (type == OBJ_LIGHT)
+	{
+		light_sphere.pos_x = scene->light_data[index].pos_x;
+		light_sphere.pos_y = scene->light_data[index].pos_y;
+		light_sphere.pos_z = scene->light_data[index].pos_z;
+		light_sphere.diameter = scene->light_data[index].diameter;
+		return (intersect_sphere(ray, &light_sphere, &hit));
+	}
+	if (type == OBJ_CUBE)
+		return (intersect_cube(ray, &scene->cube_data[index], &hit));
 	return (0);
 }
 
@@ -113,10 +136,18 @@ void	render_scene(t_rt *rt_this, int step)
 	int		bx;
 	int		by;
 	int		sel_hit;
+	int		high_quality;
+	int		last_percent;
+	int		percent;
 	t_ray	ray;
 	t_hit	closest;
+	t_vec3	view_dir;
 	int		color;
 
+	high_quality = (step == 1);
+	last_percent = -1;
+	if (high_quality)
+		draw_loading_screen(rt_this, 0);
 	y = 0;
 	while (y < HEIGHT)
 	{
@@ -126,10 +157,15 @@ void	render_scene(t_rt *rt_this, int step)
 			ray = generate_ray(rt_this->old_data->scene, x, y);
 			if (find_closest_hit(rt_this->old_data->scene, ray, &closest))
 			{
-				if (closest.is_marker)
-					color = color_to_int(255, 255, 255);
+				if (closest.obj_type == OBJ_LIGHT)
+					color = color_to_int(closest.red, closest.green,
+							closest.blue);
 				else
-					color = compute_color(rt_this->old_data->scene, &closest);
+				{
+					view_dir = vec3_mul(ray.direction, -1.0);
+					color = compute_color(rt_this->old_data->scene,
+							&closest, view_dir, high_quality);
+				}
 			}
 			else
 				color = color_to_int(0, 0, 0);
@@ -151,6 +187,15 @@ void	render_scene(t_rt *rt_this, int step)
 				by++;
 			}
 			x += step;
+		}
+		if (high_quality)
+		{
+			percent = (y * 100) / HEIGHT;
+			if (percent != last_percent)
+			{
+				draw_loading_screen(rt_this, percent);
+				last_percent = percent;
+			}
 		}
 		y += step;
 	}
@@ -210,11 +255,10 @@ static int	find_closest_hit(t_scene *scene, t_ray ray, t_hit *closest)
 	size_t			i;
 	t_hit			current;
 	int				found;
-	t_sphere_data	light_marker;
+	t_sphere_data	light_sphere;
 
 	found = 0;
 	closest->t = INFINITY;
-	closest->is_marker = 0;
 	closest->obj_type = OBJ_NONE;
 	i = 0;
 	while (i < scene->element_counts.sphere_count)
@@ -223,7 +267,6 @@ static int	find_closest_hit(t_scene *scene, t_ray ray, t_hit *closest)
 			&& current.t < closest->t)
 		{
 			*closest = current;
-			closest->is_marker = 0;
 			closest->obj_type = OBJ_SPHERE;
 			closest->obj_index = (int)i;
 			found = 1;
@@ -237,7 +280,6 @@ static int	find_closest_hit(t_scene *scene, t_ray ray, t_hit *closest)
 			&& current.t < closest->t)
 		{
 			*closest = current;
-			closest->is_marker = 0;
 			closest->obj_type = OBJ_PLANE;
 			closest->obj_index = (int)i;
 			found = 1;
@@ -251,26 +293,47 @@ static int	find_closest_hit(t_scene *scene, t_ray ray, t_hit *closest)
 			&& current.t < closest->t)
 		{
 			*closest = current;
-			closest->is_marker = 0;
 			closest->obj_type = OBJ_CYLINDER;
 			closest->obj_index = (int)i;
 			found = 1;
 		}
 		i++;
 	}
-	light_marker.pos_x = scene->light_data.pos_x;
-	light_marker.pos_y = scene->light_data.pos_y;
-	light_marker.pos_z = scene->light_data.pos_z;
-	light_marker.diameter = LIGHT_MARKER_DIAMETER;
-	light_marker.red = 0;
-	light_marker.green = 0;
-	light_marker.blue = 0;
-	if (intersect_sphere(ray, &light_marker, &current) && current.t < closest->t)
+	i = 0;
+	while (i < scene->element_counts.cube_count)
 	{
-		*closest = current;
-		closest->is_marker = 1;
-		closest->obj_type = OBJ_NONE;
-		found = 1;
+		if (intersect_cube(ray, &scene->cube_data[i], &current)
+			&& current.t < closest->t)
+		{
+			*closest = current;
+			closest->obj_type = OBJ_CUBE;
+			closest->obj_index = (int)i;
+			found = 1;
+		}
+		i++;
+	}
+	i = 0;
+	while (i < scene->element_counts.light_count)
+	{
+		if (scene->light_data[i].diameter > 0.0)
+		{
+			light_sphere.pos_x = scene->light_data[i].pos_x;
+			light_sphere.pos_y = scene->light_data[i].pos_y;
+			light_sphere.pos_z = scene->light_data[i].pos_z;
+			light_sphere.diameter = scene->light_data[i].diameter;
+			light_sphere.red = scene->light_data[i].red;
+			light_sphere.green = scene->light_data[i].green;
+			light_sphere.blue = scene->light_data[i].blue;
+			if (intersect_sphere(ray, &light_sphere, &current)
+				&& current.t < closest->t)
+			{
+				*closest = current;
+				closest->obj_type = OBJ_LIGHT;
+				closest->obj_index = (int)i;
+				found = 1;
+			}
+		}
+		i++;
 	}
 	return (found);
 }
@@ -294,8 +357,12 @@ int	pick_object(t_scene *scene, int x, int y, int *type, int *id)
 			*id = scene->sphere_data[hit.obj_index].id;
 		else if (hit.obj_type == OBJ_PLANE)
 			*id = scene->plane_data[hit.obj_index].id;
-		else
+		else if (hit.obj_type == OBJ_CYLINDER)
 			*id = scene->cylinder_data[hit.obj_index].id;
+		else if (hit.obj_type == OBJ_LIGHT)
+			*id = scene->light_data[hit.obj_index].id;
+		else
+			*id = scene->cube_data[hit.obj_index].id;
 		return (1);
 	}
 	return (0);

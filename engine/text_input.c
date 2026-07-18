@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 23:16:29 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 00:22:59 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 02:16:44 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,37 @@ t_vec3	get_axis_vector(int axis)
 	return (vec3_create(0.0, 0.0, 1.0));
 }
 
-static void	confirm_text_input(t_rt *rt)
+static void	confirm_property_input(t_rt *rt)
+{
+	double	value;
+	double	old;
+	int		type;
+	int		index;
+
+	if (rt->input.text_len == 0)
+	{
+		rt->input.text_input_mode = 0;
+		return ;
+	}
+	type = rt->input.selected_type;
+	index = find_index_by_id(rt->old_data->scene, type,
+			rt->input.selected_id);
+	if (index == -1)
+	{
+		rt->input.text_input_mode = 0;
+		return ;
+	}
+	value = ft_atod(rt->input.text_buffer);
+	old = get_property_value(rt->old_data->scene, type, index,
+			rt->input.active_property);
+	push_property_undo(rt, type, rt->input.selected_id,
+		rt->input.active_property, old);
+	set_property_value(rt->old_data->scene, type, index,
+		rt->input.active_property, value);
+	rt->input.text_input_mode = 0;
+}
+
+void	confirm_text_input(t_rt *rt)
 {
 	double	value;
 	t_vec3	axis_dir;
@@ -65,7 +95,12 @@ static void	confirm_text_input(t_rt *rt)
 void	handle_text_input_key(t_rt *rt, int keycode)
 {
 	if (keycode == 65293)
-		confirm_text_input(rt);
+	{
+		if (rt->input.text_target == TEXT_TARGET_PROPERTY)
+			confirm_property_input(rt);
+		else
+			confirm_text_input(rt);
+	}
 	else if (keycode == 65307)
 	{
 		rt->input.text_input_mode = 0;
@@ -88,6 +123,19 @@ void	handle_text_input_key(t_rt *rt, int keycode)
 	}
 }
 
+static char	*property_field_label(int field)
+{
+	if (field == PROP_COLOR_R)
+		return ("Color R");
+	if (field == PROP_COLOR_G)
+		return ("Color G");
+	if (field == PROP_COLOR_B)
+		return ("Color B");
+	if (field == PROP_SIZE1)
+		return ("Diameter");
+	return ("Height");
+}
+
 void	draw_text_input(t_rt *rt)
 {
 	char	line[64];
@@ -96,19 +144,27 @@ void	draw_text_input(t_rt *rt)
 
 	if (!rt->input.text_input_mode)
 		return ;
-	if (rt->input.edit_mode == EDIT_MOVE)
-		mode_label = "Move";
+	line[0] = '\0';
+	if (rt->input.text_target == TEXT_TARGET_PROPERTY)
+	{
+		strcpy(line, property_field_label(rt->input.active_property));
+	}
 	else
-		mode_label = "Rotate";
-	if (rt->input.dragging_axis == 0)
-		axis_label = "X";
-	else if (rt->input.dragging_axis == 1)
-		axis_label = "Y";
-	else
-		axis_label = "Z";
-	strcpy(line, mode_label);
-	strcat(line, " ");
-	strcat(line, axis_label);
+	{
+		if (rt->input.edit_mode == EDIT_MOVE)
+			mode_label = "Move";
+		else
+			mode_label = "Rotate";
+		if (rt->input.dragging_axis == 0)
+			axis_label = "X";
+		else if (rt->input.dragging_axis == 1)
+			axis_label = "Y";
+		else
+			axis_label = "Z";
+		strcpy(line, mode_label);
+		strcat(line, " ");
+		strcat(line, axis_label);
+	}
 	strcat(line, ": ");
 	strcat(line, rt->input.text_buffer);
 	mlx_string_put(rt->old_data->mlx_ptr, rt->old_data->mlx_window,

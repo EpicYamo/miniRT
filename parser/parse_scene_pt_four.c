@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:31:06 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/13 02:50:35 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 03:22:47 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 static void	allocate_sphere_space(t_scene *scene);
 static void	allocate_plane_space(t_scene *scene);
 static void	allocate_cylinder_space(t_scene *scene);
+static void	allocate_light_space(t_scene *scene);
+static void	allocate_cube_space(t_scene *scene);
 
 void	create_parameter_count(t_scene *scene, char **scene_map)
 {
@@ -28,8 +30,12 @@ void	create_parameter_count(t_scene *scene, char **scene_map)
 			scene->element_counts.sphere_count += 1;
 		else if (scene_map[i][0] == 'p')
 			scene->element_counts.plane_count += 1;
-		else if (scene_map[i][0] == 'c')
+		else if (scene_map[i][0] == 'c' && scene_map[i][1] == 'y')
 			scene->element_counts.cylinder_count += 1;
+		else if (scene_map[i][0] == 'c' && scene_map[i][1] == 'u')
+			scene->element_counts.cube_count += 1;
+		else if (scene_map[i][0] == 'L')
+			scene->element_counts.light_count += 1;
 	}
 	if (scene->element_counts.sphere_count > 0)
 		allocate_sphere_space(scene);
@@ -37,6 +43,39 @@ void	create_parameter_count(t_scene *scene, char **scene_map)
 		allocate_plane_space(scene);
 	if (scene->element_counts.cylinder_count > 0)
 		allocate_cylinder_space(scene);
+	if (scene->element_counts.light_count > 0)
+		allocate_light_space(scene);
+	if (scene->element_counts.cube_count > 0)
+		allocate_cube_space(scene);
+}
+
+static void	allocate_cube_space(t_scene *scene)
+{
+	scene->cube_data
+		= malloc(sizeof(t_cube_data) * scene->element_counts.cube_count);
+	if (!(scene->cube_data))
+	{
+		free(scene->sphere_data);
+		free(scene->plane_data);
+		free(scene->cylinder_data);
+		free(scene->light_data);
+		free(scene);
+		error_message(1, "allocation failed");
+	}
+}
+
+static void	allocate_light_space(t_scene *scene)
+{
+	scene->light_data
+		= malloc(sizeof(t_light_data) * scene->element_counts.light_count);
+	if (!(scene->light_data))
+	{
+		free(scene->sphere_data);
+		free(scene->plane_data);
+		free(scene->cylinder_data);
+		free(scene);
+		error_message(1, "allocation failed");
+	}
 }
 
 static void	allocate_sphere_space(t_scene *scene)

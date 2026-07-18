@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 22:58:08 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/13 02:47:47 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 03:23:28 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,25 +61,50 @@ void	create_camera_data(t_scene *scene, char **scene_map)
 	}
 }
 
+static int	has_extra_param(char *value)
+{
+	while (*value && *value != ' ')
+		value++;
+	while (*value == ' ')
+		value++;
+	return (*value != '\0');
+}
+
 void	create_light_data(t_scene *scene, char **scene_map)
 {
 	size_t	i;
 	size_t	j;
+	size_t	index;
 
+	index = -1;
 	i = -1;
 	while (scene_map[++i])
 	{
 		if (scene_map[i][0] == 'L')
 		{
-			scene->light_data.existence = 1;
+			index++;
 			j = 1;
 			while (scene_map[i][j] == ' ')
 				j++;
-			fill_coordinates(&scene->light_data.pos_x,
-				&scene->light_data.pos_y, &scene->light_data.pos_z,
-				&scene_map[i][j]);
+			fill_coordinates(&scene->light_data[index].pos_x,
+				&scene->light_data[index].pos_y,
+				&scene->light_data[index].pos_z, &scene_map[i][j]);
 			skip_to_next_parameter(scene_map, &i, &j);
-			scene->light_data.brightness = ft_atod(&scene_map[i][j]);
+			scene->light_data[index].brightness = ft_atod(&scene_map[i][j]);
+			scene->light_data[index].red = 255;
+			scene->light_data[index].green = 255;
+			scene->light_data[index].blue = 255;
+			scene->light_data[index].diameter = 0.0;
+			scene->light_data[index].id = 0;
+			if (has_extra_param(&scene_map[i][j]))
+			{
+				skip_to_next_parameter(scene_map, &i, &j);
+				fill_colors(&scene->light_data[index].red,
+					&scene->light_data[index].green,
+					&scene->light_data[index].blue, &scene_map[i][j]);
+				skip_to_next_parameter(scene_map, &i, &j);
+				scene->light_data[index].diameter = ft_atod(&scene_map[i][j]);
+			}
 		}
 	}
 }

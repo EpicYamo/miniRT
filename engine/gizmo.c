@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 19:17:01 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 01:03:01 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 03:26:41 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,14 @@ t_vec3	get_object_center(t_scene *scene, int type, int index)
 		return (vec3_create(scene->plane_data[index].pos_x,
 				scene->plane_data[index].pos_y,
 				scene->plane_data[index].pos_z));
+	if (type == OBJ_LIGHT)
+		return (vec3_create(scene->light_data[index].pos_x,
+				scene->light_data[index].pos_y,
+				scene->light_data[index].pos_z));
+	if (type == OBJ_CUBE)
+		return (vec3_create(scene->cube_data[index].pos_x,
+				scene->cube_data[index].pos_y,
+				scene->cube_data[index].pos_z));
 	return (vec3_create(0.0, 0.0, 0.0));
 }
 
@@ -243,6 +251,18 @@ void	set_object_center(t_scene *scene, int type, int index, t_vec3 pos)
 		scene->plane_data[index].pos_x = pos.x;
 		scene->plane_data[index].pos_y = pos.y;
 		scene->plane_data[index].pos_z = pos.z;
+	}
+	else if (type == OBJ_LIGHT)
+	{
+		scene->light_data[index].pos_x = pos.x;
+		scene->light_data[index].pos_y = pos.y;
+		scene->light_data[index].pos_z = pos.z;
+	}
+	else if (type == OBJ_CUBE)
+	{
+		scene->cube_data[index].pos_x = pos.x;
+		scene->cube_data[index].pos_y = pos.y;
+		scene->cube_data[index].pos_z = pos.z;
 	}
 }
 
@@ -494,6 +514,10 @@ t_vec3	get_object_direction(t_scene *scene, int type, int index)
 		return (vec3_create(scene->cylinder_data[index].vector_x,
 				scene->cylinder_data[index].vector_y,
 				scene->cylinder_data[index].vector_z));
+	if (type == OBJ_CUBE)
+		return (vec3_create(scene->cube_data[index].vector_x,
+				scene->cube_data[index].vector_y,
+				scene->cube_data[index].vector_z));
 	return (vec3_create(0.0, 0.0, 1.0));
 }
 
@@ -510,5 +534,11 @@ void	set_object_direction(t_scene *scene, int type, int index, t_vec3 dir)
 		scene->cylinder_data[index].vector_x = dir.x;
 		scene->cylinder_data[index].vector_y = dir.y;
 		scene->cylinder_data[index].vector_z = dir.z;
+	}
+	else if (type == OBJ_CUBE)
+	{
+		scene->cube_data[index].vector_x = dir.x;
+		scene->cube_data[index].vector_y = dir.y;
+		scene->cube_data[index].vector_z = dir.z;
 	}
 }

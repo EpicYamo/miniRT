@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 05:16:05 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 01:07:51 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 03:27:44 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,27 @@ int	key_press(int keycode, t_rt *rt)
 		if (rt->input.dragging_axis != -1 && rt->input.edit_mode != EDIT_NONE)
 		{
 			rt->input.text_input_mode = 1;
+			rt->input.text_target = TEXT_TARGET_AXIS;
+			rt->input.text_len = 0;
+			rt->input.text_buffer[0] = '\0';
+		}
+	}
+	else if (keycode == 'p')
+	{
+		cycle_property_field(rt);
+		if (rt->input.mode == MODE_RENDER)
+		{
+			render_scene(rt, 1);
+			present_frame(rt);
+		}
+	}
+	else if (keycode == 'b')
+	{
+		if (rt->input.selected_type != OBJ_NONE
+			&& rt->input.active_property != PROP_NONE)
+		{
+			rt->input.text_input_mode = 1;
+			rt->input.text_target = TEXT_TARGET_PROPERTY;
 			rt->input.text_len = 0;
 			rt->input.text_buffer[0] = '\0';
 		}
@@ -96,12 +117,25 @@ int	key_press(int keycode, t_rt *rt)
 			present_frame(rt);
 		}
 	}
-	else if (keycode == '1')
+	else if (keycode == '1' && rt->input.selected_type == OBJ_NONE)
 		spawn_sphere(rt);
-	else if (keycode == '2')
+	else if (keycode == '2' && rt->input.selected_type == OBJ_NONE)
 		spawn_plane(rt);
-	else if (keycode == '3')
+	else if (keycode == '3' && rt->input.selected_type == OBJ_NONE)
 		spawn_cylinder(rt);
+	else if (keycode == '4' && rt->input.selected_type == OBJ_NONE)
+		spawn_light(rt);
+	else if (keycode == '5' && rt->input.selected_type == OBJ_NONE)
+		spawn_cube(rt);
+	else if (keycode == 'y')
+	{
+		cycle_selected_light(rt);
+		if (rt->input.mode == MODE_RENDER)
+		{
+			render_scene(rt, 1);
+			present_frame(rt);
+		}
+	}
 	else if (keycode == 65535)
 		delete_selected(rt);
 	else if (keycode == 'c')
@@ -110,6 +144,7 @@ int	key_press(int keycode, t_rt *rt)
 		rt->input.selected_id = -1;
 		rt->input.edit_mode = EDIT_NONE;
 		rt->input.dragging_axis = -1;
+		rt->input.active_property = PROP_NONE;
 		if (rt->input.mode == MODE_RENDER)
 		{
 			render_scene(rt, 1);
@@ -134,7 +169,8 @@ int	key_press(int keycode, t_rt *rt)
 	else if (keycode == 'r')
 	{
 		if (rt->input.selected_type == OBJ_PLANE
-			|| rt->input.selected_type == OBJ_CYLINDER)
+			|| rt->input.selected_type == OBJ_CYLINDER
+			|| rt->input.selected_type == OBJ_CUBE)
 		{
 			if (rt->input.edit_mode == EDIT_ROTATE)
 				rt->input.edit_mode = EDIT_NONE;
@@ -247,6 +283,7 @@ int	mouse_press(int button, int x, int y, t_rt *rt)
 			}
 			rt->input.dragging_axis = -1;
 			rt->input.edit_mode = EDIT_NONE;
+			rt->input.active_property = PROP_NONE;
 			render_scene(rt, rt->input.render_step);
 			present_frame(rt);
 		}

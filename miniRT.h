@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:43:55 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 01:07:04 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 03:19:55 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,12 @@
 # define OBJ_SPHERE 0
 # define OBJ_PLANE 1
 # define OBJ_CYLINDER 2
+# define OBJ_LIGHT 3
+# define OBJ_CUBE 4
+# define NAV_LIGHT_LIMIT 2
+# define LIGHT_SPAWN_DIAMETER 2.0
+# define LIGHT_SPAWN_BRIGHTNESS 0.6
+# define CUBE_SPAWN_SIZE 12.0
 # define OUTLINE_THICKNESS 2
 # define PLANE_MARKER_RADIUS 15.0
 # define EDIT_NONE 0
@@ -44,6 +50,15 @@
 # define UNDO_ROTATE 1
 # define UNDO_DELETE 2
 # define UNDO_SPAWN 3
+# define UNDO_PROPERTY 4
+# define PROP_NONE -1
+# define PROP_COLOR_R 0
+# define PROP_COLOR_G 1
+# define PROP_COLOR_B 2
+# define PROP_SIZE1 3
+# define PROP_SIZE2 4
+# define TEXT_TARGET_AXIS 0
+# define TEXT_TARGET_PROPERTY 1
 
 # include <stddef.h>
 
@@ -52,6 +67,8 @@ typedef struct s_scene_element_count
 	size_t	sphere_count;
 	size_t	plane_count;
 	size_t	cylinder_count;
+	size_t	light_count;
+	size_t	cube_count;
 }	t_element_count;
 
 typedef struct s_ambient_data
@@ -77,11 +94,15 @@ typedef struct s_camera_data
 
 typedef struct s_light_data
 {
-	int		existence;
-	double	pos_x;
-	double	pos_y;
-	double	pos_z;
-	double	brightness;
+	double			pos_x;
+	double			pos_y;
+	double			pos_z;
+	double			brightness;
+	unsigned int	red;
+	unsigned int	green;
+	unsigned int	blue;
+	double			diameter;
+	int				id;
 }	t_light_data;
 
 typedef struct s_sphere_data
@@ -126,15 +147,31 @@ typedef struct s_cylinder_data
 	int				id;
 }	t_cylinder_data;
 
+typedef struct s_cube_data
+{
+	double			pos_x;
+	double			pos_y;
+	double			pos_z;
+	double			vector_x;
+	double			vector_y;
+	double			vector_z;
+	double			size;
+	unsigned int	red;
+	unsigned int	green;
+	unsigned int	blue;
+	int				id;
+}	t_cube_data;
+
 typedef struct s_scene
 {
 	t_ambient_data	ambient_data;
 	t_camera_data	camera_data;
-	t_light_data	light_data;
+	t_light_data	*light_data;
 	t_element_count	element_counts;
 	t_sphere_data	*sphere_data;
 	t_plane_data	*plane_data;
 	t_cylinder_data	*cylinder_data;
+	t_cube_data		*cube_data;
 }	t_scene;
 
 typedef struct s_data
@@ -201,6 +238,10 @@ typedef struct s_input
 	int		next_sphere_id;
 	int		next_plane_id;
 	int		next_cylinder_id;
+	int		next_light_id;
+	int		next_cube_id;
+	int		active_property;
+	int		text_target;
 }	t_input;
 
 typedef struct s_undo_entry
@@ -212,6 +253,10 @@ typedef struct s_undo_entry
 	t_sphere_data	del_sphere;
 	t_plane_data	del_plane;
 	t_cylinder_data	del_cylinder;
+	t_light_data	del_light;
+	t_cube_data		del_cube;
+	int				field;
+	double			old_scalar;
 }	t_undo_entry;
 
 typedef struct s_scene_backup
@@ -219,9 +264,13 @@ typedef struct s_scene_backup
 	t_sphere_data	*sphere_data;
 	t_plane_data	*plane_data;
 	t_cylinder_data	*cylinder_data;
+	t_light_data	*light_data;
+	t_cube_data		*cube_data;
 	int				sphere_count;
 	int				plane_count;
 	int				cylinder_count;
+	int				light_count;
+	int				cube_count;
 }	t_scene_backup;
 
 typedef struct s_rt
@@ -264,6 +313,7 @@ void	validate_sphere_data(char **scene);
 void	check_diameter_height(char **scene, char *value);
 void	validate_plane_data(char **scene);
 void	validate_cylinder_data(char **scene);
+void	validate_cube_data(char **scene);
 void	skip_to_next_parameter(char **scene, size_t *i, size_t *j);
 t_scene	*parse_scene(char *file_path);
 void	fill_colors(unsigned int *red, unsigned int *green,
@@ -279,6 +329,7 @@ void	create_parameter_count(t_scene *scene, char **scene_map);
 void	create_sphere_data(t_scene *scene, char **scene_map);
 void	create_plane_data(t_scene *scene, char **scene_map);
 void	create_cylinder_data(t_scene *scene, char **scene_map);
+void	create_cube_data(t_scene *scene, char **scene_map);
 void	run_engine(void);
 
 size_t	ft_strlen(const char *s);
@@ -305,10 +356,12 @@ int		check_seperator_count(char *str, size_t count);
 void	render_scene(t_rt *rt_this, int step);
 void	my_mlx_pixel_put(t_img *img, int x, int y, int color);
 int		intersect_sphere(t_ray ray, t_sphere_data *sphere, t_hit *hit);
-int		compute_color(t_scene *scene, t_hit *hit);
+int		compute_color(t_scene *scene, t_hit *hit, t_vec3 view_dir,
+			int high_quality);
 int		is_in_shadow(t_scene *scene, t_vec3 point, t_vec3 normal, t_vec3 light_pos);
 int		intersect_plane(t_ray ray, t_plane_data *plane, t_hit *hit);
 int		intersect_cylinder(t_ray ray, t_cylinder_data *cy, t_hit *hit);
+int		intersect_cube(t_ray ray, t_cube_data *cube, t_hit *hit);
 
 int		key_press(int keycode, t_rt *rt);
 int		key_release(int keycode, t_rt *rt);
@@ -355,8 +408,20 @@ int		find_index_by_id(t_scene *scene, int type, int id);
 void	spawn_sphere(t_rt *rt);
 void	spawn_plane(t_rt *rt);
 void	spawn_cylinder(t_rt *rt);
+void	spawn_light(t_rt *rt);
+void	spawn_cube(t_rt *rt);
+void	cycle_selected_light(t_rt *rt);
 void	delete_selected(t_rt *rt);
 void	shift_undo_stack(t_rt *rt);
 void	shift_remove(t_scene *scene, int type, int index);
+
+void	draw_property_panel(t_rt *rt);
+void	cycle_property_field(t_rt *rt);
+double	get_property_value(t_scene *scene, int type, int index, int field);
+void	set_property_value(t_scene *scene, int type, int index, int field,
+			double value);
+void	push_property_undo(t_rt *rt, int type, int id, int field,
+			double old_scalar);
+void	confirm_text_input(t_rt *rt);
 
 #endif

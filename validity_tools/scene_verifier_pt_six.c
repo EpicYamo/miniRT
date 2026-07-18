@@ -6,11 +6,20 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 10:36:51 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/16 21:04:53 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 02:40:05 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../miniRT.h"
+
+static int	line_has_extra(char *value)
+{
+	while (*value && *value != ' ')
+		value++;
+	while (*value == ' ')
+		value++;
+	return (*value != '\0');
+}
 
 void	validate_light_data(char **scene)
 {
@@ -31,6 +40,19 @@ void	validate_light_data(char **scene)
 			while (scene[i][j] == ' ')
 				j++;
 			check_ratio(scene, &scene[i][j]);
+			if (line_has_extra(&scene[i][j]))
+			{
+				while (scene[i][j] != ' ')
+					j++;
+				while (scene[i][j] == ' ')
+					j++;
+				check_colors_range(scene, &scene[i][j]);
+				while (scene[i][j] != ' ')
+					j++;
+				while (scene[i][j] == ' ')
+					j++;
+				check_diameter_height(scene, &scene[i][j]);
+			}
 		}
 	}
 }
@@ -80,10 +102,10 @@ void	check_diameter_height(char **scene, char *value)
 			free_arr_error_message(scene);
 		while (ft_isdigit(value[i]))
 			i++;
-		if (value[i] != ' ')
+		if (value[i] != ' ' && value[i] != '\0')
 			free_arr_error_message(scene);
 	}
-	else if (value[i] != ' ')
+	else if (value[i] != ' ' && value[i] != '\0')
 		free_arr_error_message(scene);
 	d_value = ft_atod(value);
 	if (d_value < 0.0)

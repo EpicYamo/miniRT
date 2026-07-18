@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/18 00:20:44 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 00:53:36 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 03:27:29 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	spawn_sphere(t_rt *rt)
 	rt->input.selected_id = scene->sphere_data[count].id;
 	rt->input.edit_mode = EDIT_MOVE;
 	rt->input.dragging_axis = -1;
+	rt->input.active_property = PROP_NONE;
 	push_undo(rt, OBJ_SPHERE, scene->sphere_data[count].id, UNDO_SPAWN,
 		vec3_create(0.0, 0.0, 0.0));
 }
@@ -85,6 +86,7 @@ void	spawn_plane(t_rt *rt)
 	rt->input.selected_id = scene->plane_data[count].id;
 	rt->input.edit_mode = EDIT_MOVE;
 	rt->input.dragging_axis = -1;
+	rt->input.active_property = PROP_NONE;
 	push_undo(rt, OBJ_PLANE, scene->plane_data[count].id, UNDO_SPAWN,
 		vec3_create(0.0, 0.0, 0.0));
 }
@@ -121,7 +123,76 @@ void	spawn_cylinder(t_rt *rt)
 	rt->input.selected_id = scene->cylinder_data[count].id;
 	rt->input.edit_mode = EDIT_MOVE;
 	rt->input.dragging_axis = -1;
+	rt->input.active_property = PROP_NONE;
 	push_undo(rt, OBJ_CYLINDER, scene->cylinder_data[count].id, UNDO_SPAWN,
+		vec3_create(0.0, 0.0, 0.0));
+}
+
+void	spawn_light(t_rt *rt)
+{
+	t_scene			*scene;
+	t_light_data	*new_arr;
+	size_t			count;
+	t_vec3			pos;
+
+	scene = rt->old_data->scene;
+	count = scene->element_counts.light_count;
+	new_arr = realloc(scene->light_data, sizeof(t_light_data) * (count + 1));
+	if (!new_arr)
+		return ;
+	scene->light_data = new_arr;
+	pos = spawn_position(scene);
+	scene->light_data[count].pos_x = pos.x;
+	scene->light_data[count].pos_y = pos.y;
+	scene->light_data[count].pos_z = pos.z;
+	scene->light_data[count].brightness = LIGHT_SPAWN_BRIGHTNESS;
+	scene->light_data[count].red = 255;
+	scene->light_data[count].green = 255;
+	scene->light_data[count].blue = 255;
+	scene->light_data[count].diameter = LIGHT_SPAWN_DIAMETER;
+	scene->light_data[count].id = rt->input.next_light_id++;
+	scene->element_counts.light_count++;
+	rt->input.selected_type = OBJ_LIGHT;
+	rt->input.selected_id = scene->light_data[count].id;
+	rt->input.edit_mode = EDIT_MOVE;
+	rt->input.dragging_axis = -1;
+	rt->input.active_property = PROP_NONE;
+	push_undo(rt, OBJ_LIGHT, scene->light_data[count].id, UNDO_SPAWN,
+		vec3_create(0.0, 0.0, 0.0));
+}
+
+void	spawn_cube(t_rt *rt)
+{
+	t_scene			*scene;
+	t_cube_data		*new_arr;
+	size_t			count;
+	t_vec3			pos;
+
+	scene = rt->old_data->scene;
+	count = scene->element_counts.cube_count;
+	new_arr = realloc(scene->cube_data, sizeof(t_cube_data) * (count + 1));
+	if (!new_arr)
+		return ;
+	scene->cube_data = new_arr;
+	pos = spawn_position(scene);
+	scene->cube_data[count].pos_x = pos.x;
+	scene->cube_data[count].pos_y = pos.y;
+	scene->cube_data[count].pos_z = pos.z;
+	scene->cube_data[count].vector_x = 0.0;
+	scene->cube_data[count].vector_y = 1.0;
+	scene->cube_data[count].vector_z = 0.0;
+	scene->cube_data[count].size = CUBE_SPAWN_SIZE;
+	scene->cube_data[count].red = 255;
+	scene->cube_data[count].green = 255;
+	scene->cube_data[count].blue = 255;
+	scene->cube_data[count].id = rt->input.next_cube_id++;
+	scene->element_counts.cube_count++;
+	rt->input.selected_type = OBJ_CUBE;
+	rt->input.selected_id = scene->cube_data[count].id;
+	rt->input.edit_mode = EDIT_MOVE;
+	rt->input.dragging_axis = -1;
+	rt->input.active_property = PROP_NONE;
+	push_undo(rt, OBJ_CUBE, scene->cube_data[count].id, UNDO_SPAWN,
 		vec3_create(0.0, 0.0, 0.0));
 }
 
@@ -162,6 +233,28 @@ void	shift_remove(t_scene *scene, int type, int index)
 			i++;
 		}
 		scene->element_counts.cylinder_count--;
+	}
+	else if (type == OBJ_LIGHT)
+	{
+		count = scene->element_counts.light_count;
+		i = index;
+		while (i < count - 1)
+		{
+			scene->light_data[i] = scene->light_data[i + 1];
+			i++;
+		}
+		scene->element_counts.light_count--;
+	}
+	else if (type == OBJ_CUBE)
+	{
+		count = scene->element_counts.cube_count;
+		i = index;
+		while (i < count - 1)
+		{
+			scene->cube_data[i] = scene->cube_data[i + 1];
+			i++;
+		}
+		scene->element_counts.cube_count--;
 	}
 }
 
@@ -204,12 +297,17 @@ void	delete_selected(t_rt *rt)
 		e->del_sphere = scene->sphere_data[index];
 	else if (type == OBJ_PLANE)
 		e->del_plane = scene->plane_data[index];
-	else
+	else if (type == OBJ_CYLINDER)
 		e->del_cylinder = scene->cylinder_data[index];
+	else if (type == OBJ_LIGHT)
+		e->del_light = scene->light_data[index];
+	else
+		e->del_cube = scene->cube_data[index];
 	rt->undo_count++;
 	shift_remove(scene, type, index);
 	rt->input.selected_type = OBJ_NONE;
 	rt->input.selected_id = -1;
 	rt->input.edit_mode = EDIT_NONE;
 	rt->input.dragging_axis = -1;
+	rt->input.active_property = PROP_NONE;
 }

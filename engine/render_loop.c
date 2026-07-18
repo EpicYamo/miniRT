@@ -33,6 +33,7 @@ void	present_frame(t_rt *rt)
 	mlx_put_image_to_window(rt->old_data->mlx_ptr,
 		rt->old_data->mlx_window, rt->img.img_ptr, 0, 0);
 	draw_text_input(rt);
+	draw_property_panel(rt);
 }
 
 

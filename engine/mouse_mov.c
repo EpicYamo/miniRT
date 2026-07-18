@@ -22,6 +22,8 @@ void	init_camera_state(t_rt *rt)
 	memset(&rt->input, 0, sizeof(t_input));
 	rt->input.selected_type = OBJ_NONE;
 	rt->input.dragging_axis = -1;
+	rt->input.active_property = PROP_NONE;
+	rt->input.text_target = TEXT_TARGET_AXIS;
 	rt->undo_count = 0;
 	forward = vec3_normalize(vec3_create(
 				rt->old_data->scene->camera_data.vector_x,

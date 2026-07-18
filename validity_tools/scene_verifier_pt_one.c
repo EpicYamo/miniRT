@@ -6,7 +6,7 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 23:36:50 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/16 21:05:46 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/18 03:26:15 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	check_scene(char *file_path)
 	validate_sphere_data(scene);
 	validate_plane_data(scene);
 	validate_cylinder_data(scene);
+	validate_cube_data(scene);
 	free_two_dim_array(scene);
 }
 
@@ -51,7 +52,8 @@ static void	validate_identifier_names(char **scene)
 			&& (ft_strncmp(scene[i], "L ", 2) != 0)
 			&& (ft_strncmp(scene[i], "sp ", 3) != 0)
 			&& (ft_strncmp(scene[i], "pl ", 3) != 0)
-			&& (ft_strncmp(scene[i], "cy ", 3) != 0))
+			&& (ft_strncmp(scene[i], "cy ", 3) != 0)
+			&& (ft_strncmp(scene[i], "cu ", 3) != 0))
 			free_arr_error_message(scene);
 	}
 }
@@ -60,22 +62,18 @@ static void	validate_identifier_count(char **scene)
 {
 	size_t	i;
 	size_t	cam_count;
-	size_t	light_count;
 	size_t	ambient_count;
 
 	cam_count = 0;
-	light_count = 0;
 	ambient_count = 0;
 	i = -1;
 	while (scene[++i])
 	{
 		if (ft_strncmp(scene[i], "A ", 2) == 0)
 			ambient_count++;
-		else if (ft_strncmp(scene[i], "L ", 2) == 0)
-			light_count++;
 		else if (ft_strncmp(scene[i], "C ", 2) == 0)
 			cam_count++;
-		if ((cam_count > 1) || (light_count > 1) || (ambient_count > 1))
+		if ((cam_count > 1) || (ambient_count > 1))
 			free_arr_error_message(scene);
 	}
 }
