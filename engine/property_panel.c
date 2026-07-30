@@ -8,7 +8,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../miniRT.h"
+#include "../prismRT.h"
 #include "../minilibx-linux/mlx.h"
 #include <string.h>
 #include <stdio.h>

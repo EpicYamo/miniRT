@@ -6,11 +6,11 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 11:40:19 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/18 00:08:38 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/30 23:09:22 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../miniRT.h"
+#include "../prismRT.h"
 #include "../minilibx-linux/mlx.h"
 #include <stdlib.h>
 
@@ -51,7 +51,7 @@ static void	init_engine_data(t_rt *rt_this)
 		error_message(1, "Memory Allocation");
 	}
 	(*rt_this).old_data->mlx_window
-		= mlx_new_window((*rt_this).old_data->mlx_ptr, WIDTH, HEIGHT, "miniRT");
+		= mlx_new_window((*rt_this).old_data->mlx_ptr, WIDTH, HEIGHT, "prismRT");
 	if (!((*rt_this).old_data->mlx_window))
 	{
 		mlx_destroy_display((*rt_this).old_data->mlx_ptr);

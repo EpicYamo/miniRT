@@ -6,11 +6,11 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:31:06 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/13 02:50:35 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/30 23:09:22 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../miniRT.h"
+#include "../prismRT.h"
 #include <stdlib.h>
 
 static void	allocate_sphere_space(t_scene *scene);

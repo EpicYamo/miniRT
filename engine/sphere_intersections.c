@@ -6,11 +6,11 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 18:29:30 by aaycan            #+#    #+#             */
-/*   Updated: 2026/07/07 19:48:22 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/30 23:09:22 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../miniRT.h"
+#include "../prismRT.h"
 #include <math.h>
 
 int	intersect_sphere(t_ray ray, t_sphere_data *sphere, t_hit *hit)

@@ -6,11 +6,11 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 16:37:44 by aaycan            #+#    #+#             */
-/*   Updated: 2026/02/16 21:12:31 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/30 23:09:22 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../miniRT.h"
+#include "../prismRT.h"
 
 void	check_vector_val(char **scene, char *vector)
 {

@@ -1,4 +1,4 @@
-SRCS	:= miniRT.c \
+SRCS	:= PrismRT.c \
 			validity_tools/file_verifier.c validity_tools/scene_verifier_pt_one.c validity_tools/scene_verifier_pt_two.c \
 			validity_tools/scene_verifier_pt_three.c validity_tools/scene_verifier_pt_four.c validity_tools/scene_verifier_pt_five.c \
 			validity_tools/scene_verifier_pt_six.c \
@@ -11,7 +11,7 @@ SRCS	:= miniRT.c \
 			utils/file_reader.c utils/utils_pt_one.c utils/utils_pt_two.c utils/utils_pt_three.c utils/utils_pt_four.c \
 			utils/utils_pt_five.c
 LIBS	:= -lm
-NAME	:=	miniRT
+NAME	:=	PrismRT
 CC		:=	cc
 CFLAGS	:= -Wno-incompatible-pointer-types -O2 -flto -march=native
 DEBUG_FLAGS := -Wno-incompatible-pointer-types -Wall -Wextra -Werror -O0 -g -march=x86-64-v2

@@ -6,11 +6,11 @@
 /*   By: aaycan <aaycan@student.42kocaeli.com.tr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:44:20 by aaycan            #+#    #+#             */
-/*   Updated: 2025/10/27 23:35:20 by aaycan           ###   ########.fr       */
+/*   Updated: 2026/07/30 23:08:34 by aaycan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../miniRT.h"
+#include "../prismRT.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>

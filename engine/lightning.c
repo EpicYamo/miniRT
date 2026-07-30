@@ -8,7 +8,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../miniRT.h"
+#include "../prismRT.h"
 #include <math.h>
 
 #define SHADOW_BIAS 1e-4

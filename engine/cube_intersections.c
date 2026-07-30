@@ -8,7 +8,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../miniRT.h"
+#include "../prismRT.h"
 #include <math.h>
 
 static void	build_basis(t_vec3 up, t_vec3 *right, t_vec3 *forward)
